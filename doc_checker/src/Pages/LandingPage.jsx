@@ -2,10 +2,10 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Container, Box, Grid, CssBaseline } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import logo from './images/logo.png';  
-import homeImage from './images/landing_page_img.png';  
-import featuresImage from './images/features.svg';  
-import aboutImage from './images/aboutus.png'; 
+import logo from '../images/logo.png';  
+import homeImage from '../images/landing_page_img.png';  
+import featuresImage from '../images/features.svg';  
+import aboutImage from '../images/aboutus.png'; 
 
 const theme = createTheme({
   palette: {
