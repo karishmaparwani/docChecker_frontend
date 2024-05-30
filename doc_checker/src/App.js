@@ -2,6 +2,7 @@ import './App.css';
 import DocumentReview from './Pages/DocumentReview';
 import HomePage from './Pages/HomePage';
 import LandingPage from './Pages/LandingPage';
+import UploadDocument from './Pages/UploadDocument';
 
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       {/* <DocumentReview /> */}
       {/* <HomePage /> */}
       <LandingPage/>
+      {/* <UploadDocument /> */}
     </div>
   );
 }
