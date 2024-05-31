@@ -10,6 +10,9 @@ import SignUp from './Pages/SignUp/SignUp';
 import ExpertSignUp from './Pages/ExpertSignUp/ExpertSignUp';
 import Login from './Pages/Login/Login';
 import DocumentReview from './Pages/DocumentReview';
+// import HomePage from './Pages/HomePage';
+// import LandingPage from './Pages/LandingPage';
+// import UploadDocument from './Pages/UploadDocument';
 
 
 const App = () => {
@@ -32,6 +35,12 @@ const App = () => {
         </Routes>
       </Router>
     </>
+    // <div className="App">
+    //   {/* <DocumentReview /> */}
+    //   {/* <HomePage /> */}
+    //   <LandingPage/>
+    //   {/* <UploadDocument /> */}
+    // </div>
   );
 };
 

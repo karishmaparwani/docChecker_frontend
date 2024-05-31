@@ -7,6 +7,14 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import Grid from '@mui/material/Unstable_Grid2';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'; //Resume
+import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined'; //LOR
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined'; //Essay
+import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined'; // PRD
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+
 function createData(id, name, type, status) {
     return { id, name, type, status};
   }
@@ -17,7 +25,24 @@ function createData(id, name, type, status) {
     createData(1003, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
     createData(1004, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
     createData(1005, 'Karishma_resume.pdf','Resume', 'Reviewed'),
+    createData(1006, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
+    createData(1007, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
+    createData(1008, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
+    createData(1009, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
+    createData(1010, 'Karishma_resume.pdf','Resume', 'Reviewed'),
+    createData(1011, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
+    createData(1012, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
+    createData(1013, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
+    createData(1014, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
+    createData(1015, 'Karishma_resume.pdf','Resume', 'Reviewed'),
+    createData(1016, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
+    createData(1017, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
+    createData(1018, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
+    createData(1019, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
+    createData(1020, 'Karishma_resume.pdf','Resume', 'Reviewed'),
   ];
+
+  const columns = ['Id','Document Name',`Type Of Document`, 'Status', '']
 
 function HomePage() {
     const [rows, setRows] = React.useState([...rowsFromBackend])
@@ -34,6 +59,41 @@ function HomePage() {
 
     const showAllDocs = () => {
         setRows([...rowsFromBackend])
+    }
+
+    const populateRows = (page, rowsPerPage) => {
+        return (
+            rows && rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                <TableRow
+                  key={row.id}
+                  sx={{  height: 80 }} 
+                >
+                  <TableCell >
+                    {row.id}
+                  </TableCell>
+                  <TableCell scope='row'>
+                    <Grid container spacing={2}>
+                      <Grid xs={2} pt={2}>
+                        {row.type === 'Resume' && <DescriptionOutlinedIcon fontSize='large'/>}
+                        {row.type === 'College Application Essay' && <AssignmentOutlinedIcon fontSize='large' />}
+                        {row.type === 'Letter Of Recommendation' && <DraftsOutlinedIcon fontSize='large' />}
+                        {row.type === 'Product Requirement Document' && <DocumentScannerOutlinedIcon fontSize='large' />}
+                      </Grid>
+                      <Grid xs={10}>
+                        <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>{row.name}</Grid>
+                        <Grid xs={12}>{row.status === 'Reviewed' ? 'Reviewed by expert' : 'Pending for Review'}</Grid>
+                      </Grid>
+                    </Grid>  
+                  
+                  </TableCell>
+                  <TableCell >{row.type}</TableCell>
+                  <TableCell >{row.status}</TableCell>
+                  <TableCell align='right'>
+                    <Button variant="contained" sx={{width: '12vw'}}>{row.status === 'Reviewed' ? 'View Feedback' : 'View Document'}</Button>
+                  </TableCell>
+                </TableRow>
+              ))
+        )
     }
 
   return (
@@ -86,7 +146,7 @@ function HomePage() {
                     </Button>
                 </Stack>
             </Box>
-            <BasicTable rows={rows}/>
+            <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
         </Box>
         
     </>
