@@ -6,41 +6,50 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { TablePagination } from '@mui/material';
 
-export default function BasicTable({rows}) {
+
+
+export default function BasicTable({rows, columns, populateRows}) {
+  const [page, pageChange] = React.useState(0)
+  const [rowsPerPage, rowsPerPageChange] = React.useState(5)
+
+  const handlePageChange = (event, newPage) => {
+    pageChange(newPage)
+  }
+
+  const handleRowsPerPage = (event) => {
+    rowsPerPageChange(+event.target.value)
+    pageChange(0)
+  }
+
+
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650, height: 80 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{fontWeight: 'bold'}}>Id</TableCell>
-            <TableCell sx={{fontWeight: 'bold'}}>Document Name</TableCell>
-            <TableCell sx={{fontWeight: 'bold'}}>Type Of Document&nbsp;</TableCell>
-            <TableCell sx={{fontWeight: 'bold'}}>Status&nbsp;</TableCell>
-            <TableCell sx={{fontWeight: 'bold'}}>&nbsp;</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{  height: 80 }}  //'&:last-child td, &:last-child th': { border: 0 },
-            >
-              <TableCell >
-                {row.id}
-              </TableCell>
-              <TableCell scope='row'>{row.name}</TableCell>
-              <TableCell >{row.type}</TableCell>
-              <TableCell >{row.status}</TableCell>
-              <TableCell align='right'>
-                <Button variant="contained" sx={{width: '12vw'}}>{row.status === 'Reviewed' ? 'View Feedback' : 'View Document'}</Button>
-              </TableCell>
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650, height: 80 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              {columns.map(col => <TableCell sx={{fontWeight: 'bold'}}>{col}</TableCell>)}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {populateRows(page, rowsPerPage)}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5,10]}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        count={rows.length}
+        component={'div'}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPage}
+      />
+    </>
+    
 
   );
 }
