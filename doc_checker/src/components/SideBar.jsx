@@ -12,27 +12,56 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import Hidden from '@material-ui/core/Hidden';
+import logo from '../images/logo.png';  
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
     width: 240,
     flexShrink: 0,
+    [theme.breakpoints.down('sm')]: {
+      width: 200,
+    },
   },
   drawerPaper: {
     width: 240,
-    backgroundColor: '#f5f5f5', // Customize background color
+    backgroundColor: '#f5f5f5',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      width: 200,
+    },
   },
   toolbar: theme.mixins.toolbar,
+  logoContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(2),
+    fontWeight: 'bold',
+    fontSize: 48,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 24,
+    },
+  },
+  logo: {
+    marginRight: theme.spacing(1),
+  },
   avatar: {
-    margin: theme.spacing(2),
+    marginRight: theme.spacing(1),
     backgroundColor: theme.palette.primary.main,
   },
   userInfo: {
+    display: 'flex',
+    alignItems: 'center',
     padding: theme.spacing(2),
-    textAlign: 'center',
+  },
+  userNameEmail: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  navList: {
+    flex: 1,
   },
 }));
 
@@ -49,7 +78,11 @@ const Sidebar = () => {
     >
       <div>
         <div className={classes.toolbar} />
-        <List>
+        <div className={classes.logoContainer}>
+          <img src={logo} alt="Logo" className={classes.logo} />
+          <Typography variant="h5" style={{ fontSize: '48px', fontWeight: 'bold' }}>DocChecker</Typography>
+        </div>
+        <List className={classes.navList}>
           <ListItem button>
             <ListItemIcon><HomeIcon /></ListItemIcon>
             <ListItemText primary="Home" />
@@ -64,8 +97,10 @@ const Sidebar = () => {
         <Divider />
         <div className={classes.userInfo}>
           <Avatar className={classes.avatar}>R</Avatar>
-          <Typography variant="body1">Rangoli</Typography>
-          <Typography variant="body2">rkapil@gmail.com</Typography>
+          <div className={classes.userNameEmail}>
+            <Typography variant="body1">Rangoli</Typography>
+            <Typography variant="body2">rkapil@gmail.com</Typography>
+          </div>
         </div>
         <Divider />
         <List>
