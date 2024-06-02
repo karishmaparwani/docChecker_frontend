@@ -9,6 +9,7 @@
     "@mdi/react": "^1.6.1",
     "@mui/icons-material": "^5.15.18",
     "@mui/material": "^5.15.18",
+    "@mui/styles": "^5.15.19",
     "@mui/x-data-grid": "^7.5.1",
     "@react-pdf-viewer/core": "3.6.0",
     "@react-pdf-viewer/default-layout": "3.6.0",

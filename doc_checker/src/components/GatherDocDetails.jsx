@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-function GatherDocDetails() {
+function GatherDocDetails(props) {
     return (
         <Box mt={5}>
             <Box component="section" sx={{ display: 'flex', alignItems: 'center' }}>
@@ -11,17 +11,22 @@ function GatherDocDetails() {
                     Number of years of relevant experience
                 </Typography>
                 <TextField fullWidth id="outlined-controlled"
+                    value={props.yearsOfExperience}
+                    onChange={(e) => props.setYearsOfExperience(e.target.value)}
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             height: 40,
                         },
-                    }} />
+                    }}
+                    />
             </Box>
             <Box component="section" sx={{ display: 'flex', alignItems: 'center' }} mt={3}>
                 <Typography sx={{ width: '30%' }}>
                     Document Name
                 </Typography>
                 <TextField fullWidth id="outlined-controlled"
+                    value={props.docName}
+                    onChange={e => props.setDocName(e.target.value)}
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             height: 40,
@@ -35,6 +40,8 @@ function GatherDocDetails() {
                 </Typography>
                 <TextField
                    id="filled-multiline-static"
+                   value={props.desc}
+                   onChange={e => props.setDesc(e.target.value)}
                    fullWidth
                    multiline
                    rows={2}
@@ -47,6 +54,8 @@ function GatherDocDetails() {
                 </Typography>
                 <TextField
                    id="filled-multiline-static"
+                   value={props.extraInfo}
+                   onChange={e => props.setExtraInfo(e.target.value)}
                    fullWidth
                    multiline
                    rows={2}
