@@ -6,6 +6,8 @@ import logo from '../images/logo.png';
 import homeImage from '../images/landing_page_img.png';  
 import featuresImage from '../images/features.svg';  
 import aboutImage from '../images/aboutus.png'; 
+import { useNavigate } from "react-router-dom";
+import { useRef } from 'react';
 
 const theme = createTheme({
   palette: {
@@ -95,25 +97,59 @@ const useStyles = makeStyles({
 
 function LandingPage() {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const homeRef = useRef()
+  const featureRef = useRef()
+  const aboutRef = useRef()
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className={classes.root}>
-        <AppBar position="static" className={classes.appBar}>
+        <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
             <img src={logo} alt="DocChecker Logo" className={classes.logo} />
             <Typography variant="h6" className={classes.logoText}>
               DocChecker
             </Typography>
-            <Button color="inherit" className='tabs'>Home</Button>
-            <Button color="inherit" className='tabs'>Features</Button>
-            <Button color="inherit" className='tabs'>About us</Button>
+            <Button 
+              color="inherit" 
+              className='tabs'
+              onClick={() => {
+                homeRef.current?.scrollIntoView({
+                  behavior: 'smooth'
+                })
+              }}
+              >
+                Home
+              </Button>
+            <Button 
+              color="inherit" 
+              className='tabs'
+              onClick={() => {
+                featureRef.current?.scrollIntoView({
+                  behavior: 'smooth'
+                })
+              }}
+              >
+                Features
+            </Button>
+            <Button 
+              color="inherit" 
+              className='tabs'
+              onClick={() => {
+                aboutRef.current?.scrollIntoView({
+                  behavior: 'smooth'
+                })
+              }}
+              >
+                About us
+              </Button>
           </Toolbar>
         </AppBar>
-        <Container className={classes.homeContainer}>
+        <Container className={classes.homeContainer} ref={homeRef}>
           <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} >
               <img src={homeImage} alt="home" className={classes.homeImage} />
             </Grid>
 
@@ -124,10 +160,19 @@ function LandingPage() {
                   Whether you're a student crafting the perfect college application essay, a professional fine-tuning your resume, or a product manager refining your requirements document, we've got you covered.
                 </Typography>
                 <Box className={classes.buttons}>
-                  <Button variant="contained" aria-label="Login" style={{ marginRight: 8, background: '#6FA5ED' , color:'#fff'}}>
+                  <Button 
+                    variant="contained" 
+                    aria-label="Login" 
+                    style={{ marginRight: 8, background: '#6FA5ED' , color:'#fff'}}
+                    onClick={() => navigate("/login")}>
                     Login
                   </Button>
-                  <Button variant="contained" aria-label="Sign Up" style={{ marginRight: 8, background: '#6FA5ED' , color:'#fff'}}>
+                  <Button 
+                    variant="contained" 
+                    aria-label="Sign Up" 
+                    style={{ marginRight: 8, background: '#6FA5ED' , color:'#fff'}}
+                    onClick={() => navigate("/signup")}
+                    >
                     Sign Up
                   </Button>
                 </Box>
@@ -135,7 +180,7 @@ function LandingPage() {
             </Grid>
           </Grid>
         </Container>
-        <Box className={classes.featuresSection}>
+        <Box className={classes.featuresSection} ref={featureRef}>
           <Typography variant="h2" gutterBottom style={{ fontWeight: 'bold' }}>
             Features
           </Typography>
@@ -169,7 +214,7 @@ function LandingPage() {
         </Box>
 
 
-        <Container className={classes.aboutSection}>
+        <Container className={classes.aboutSection} ref={aboutRef}>
           <Typography variant="h2" gutterBottom style={{ fontWeight: 'bold' }}>
             About us
           </Typography>
