@@ -31,7 +31,7 @@ export default function BasicTable({rows, columns, populateRows}) {
         <Table sx={{ minWidth: 650, height: 80 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              {columns.map(col => <TableCell sx={{fontWeight: 'bold'}}>{col}</TableCell>)}
+              {columns.map((col, idx) => <TableCell key={idx} sx={{fontWeight: 'bold'}}>{col}</TableCell>)}
             </TableRow>
           </TableHead>
           <TableBody>

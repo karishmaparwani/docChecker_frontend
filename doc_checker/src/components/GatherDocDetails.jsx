@@ -8,7 +8,7 @@ function GatherDocDetails(props) {
         <Box mt={5}>
             <Box component="section" sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ width: '100%' }}>
-                    Number of years of relevant experience
+                    {props?.questionsObj?.q1}
                 </Typography>
                 <TextField fullWidth id="outlined-controlled"
                     value={props.yearsOfExperience}
@@ -22,7 +22,7 @@ function GatherDocDetails(props) {
             </Box>
             <Box component="section" sx={{ display: 'flex', alignItems: 'center' }} mt={3}>
                 <Typography sx={{ width: '30%' }}>
-                    Document Name
+                    {props?.questionsObj?.q2}
                 </Typography>
                 <TextField fullWidth id="outlined-controlled"
                     value={props.docName}
@@ -35,8 +35,7 @@ function GatherDocDetails(props) {
             </Box>
             <Box component="section" mt={3}>
                 <Typography mb={2}>
-                    Reason for having your resume reviewed? Anything you want to highlight to reviewer
-                    (Job Shifting, wanted to upscale your resume.... etc.,)
+                    {props?.questionsObj?.q3}
                 </Typography>
                 <TextField
                    id="filled-multiline-static"
@@ -50,7 +49,7 @@ function GatherDocDetails(props) {
             </Box>
             <Box component="section" mt={3}>
                 <Typography mb={2}>
-                Give a brief description about your years of experience, industry, or skills. You can also talk about your achievements or previous job experiences.
+                    {props?.questionsObj?.q4}
                 </Typography>
                 <TextField
                    id="filled-multiline-static"

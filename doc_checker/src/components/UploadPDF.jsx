@@ -1,8 +1,9 @@
 import React from 'react'
 import uploadPDFImg from '../images/uploadPDF_img.png'
 import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 
-function UploadPDF({setDocument}) {
+function UploadPDF({setDocument, document}) {
     const fileInputRef = React.useRef(null);
 
     const handleImageClick = () => {
@@ -18,8 +19,9 @@ function UploadPDF({setDocument}) {
         }
     };
     return (
-        <>
-            <Box mt={10} mb={10} sx={{ display: 'flex', justifyContent: 'center', height:'20vh'}} >
+        <> 
+        <Box mt={10} mb={5} >
+            <Box mb={5} sx={{ display: 'flex', justifyContent: 'center', height:'20vh'}} >
                 <img
                     src={uploadPDFImg}
                     alt={"Upload PDF"}
@@ -33,7 +35,11 @@ function UploadPDF({setDocument}) {
                     accept="application/pdf"
                     onChange={handleFileChange}
                 />
+                
             </Box>
+            <Typography sx={{textAlign: 'center'}}>{document?.name}</Typography>
+        </Box>
+            
         </>
     )
 }
