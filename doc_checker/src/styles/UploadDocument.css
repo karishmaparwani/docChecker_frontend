@@ -1,0 +1,11 @@
+.add-padding {
+    padding-left: 20vw;
+    padding-right: 20vw;
+}
+
+@media (width <= 1024px) {
+    .add-padding {
+        padding-left: 5vw;
+        padding-right: 5vw;
+    }
+}
