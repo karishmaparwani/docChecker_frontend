@@ -13,6 +13,7 @@ import DocumentReview from './Pages/DocumentReview';
 import CustomerHomePage from './Pages/CustomerHomePage';
 import LandingPage from './Pages/LandingPage';
 import UploadDocument from './Pages/UploadDocument';
+import ExpertHomePage from './Pages/ExpertHomePage'
 
 
 const App = () => {
@@ -36,6 +37,8 @@ const App = () => {
           <Route path="/upload-document" element={<UploadDocument />} />
 
           <Route path="/customer-home" element={<CustomerHomePage />} />
+
+          <Route path="/expert-home" element={<ExpertHomePage />} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
