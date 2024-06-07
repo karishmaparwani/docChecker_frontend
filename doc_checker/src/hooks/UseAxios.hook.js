@@ -32,7 +32,7 @@ const useAxios = ({
                 headers: requestHeaders,
                 params: requestParams,
             });
-            setData(response.data);
+           setData(response.data);
         } catch (err) {
             setError(err);
         } finally {
@@ -41,10 +41,11 @@ const useAxios = ({
     }, [url, requestMethod, requestBody, requestHeaders, requestParams]);
 
     useEffect(() => {
-        if (autoFetch) {
+        if (autoFetch || requestBody) {
             fetchData();
         }
-    }, [fetchData, autoFetch]);
+    }, [fetchData, autoFetch, requestBody]);
+
 
     return {
         data,
