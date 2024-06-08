@@ -7,27 +7,80 @@ import '../SignUpAsPage.css'
 import { Stack, Button, Container } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui'
 import useAxios from '../../hooks/UseAxios.hook'
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../../redux/slicer';
+import BasicModal from '../../components/Modal';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
+    const navigate = useNavigate()
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-    const { setUrl, setMethod, setBody, refetch, data } = useAxios({
-        url: 'https://api.example.com/data',
+    const [showModal, setShowModal] = useState(false);
+    const [modalActions, setModalActions] = React.useState()
+    const [modalTitle, setModalTitle] = React.useState('')
+    const { setMethod, setBody, data, error } = useAxios({
+        url: '/auth/login',
         headers: { 'Content-Type': 'application/json' },
         autoFetch: false
     });
 
+    const dispatch = useDispatch()
+    const user = useSelector(state => state.user)
+
+    const openModal = () => {
+        setShowModal(true)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+    }
+
     const handlePostData = () => {
-        setUrl('/auth/login');
         setMethod('POST');
         setBody({ username: userName, password: password })
-        refetch();
     };
 
     useEffect(() => {
-        if (data && Object.keys(data).length)
+        if (data && Object.keys(data).length) {
             sessionStorage.setItem('userInfo', JSON.stringify(data))
+            dispatch(setUser(data))
+            if(data.role === 'customer') {
+                navigate('/customer-home')
+            }
+            if(data.role === 'expert') {
+                navigate('/expert-home')
+            }
+            // if(data.role === 'admin') {
+            //     navigate()
+            // }
+        }
+            
     }, [data])
+
+    useEffect(() => {
+        if (error && Object.keys(error).length) {
+            console.log(error?.response?.data)
+            if(error?.response?.data?.message === "UNAUTHORIZED") {
+                
+            } else {
+                setModalTitle(error?.response?.data?.message)
+            }
+
+            setModalActions(
+                <Stack direction="row" sx={{margin: 'auto'}}>
+                    <Button
+                        variant="contained"
+                        onClick={closeModal}
+                        >
+                            Close
+                    </Button>
+                </Stack>
+            )
+            setShowModal(true)
+        }
+    },[error])
 
     return (
         <div>
@@ -54,10 +107,10 @@ const Login = () => {
                                         onSuccess={handlePostData}
                                     >
                                         <Stack spacing={3}>
-                                            <TextFieldElement required fullWidth label={"Username"} id={"fullWidth"} type={'text'} name={'username'} onChange={(e) => setUserName(e.target.value)} />
-                                            <TextFieldElement required fullWidth label={"Password"} id={"fullWidth"} type={'password'} name={'password'} onChange={(e) => setPassword(e.target.value)} />
+                                            <TextFieldElement required fullWidth label={"Username"} className={"fullWidth"} type={'text'} name={'username'} onChange={(e) => setUserName(e.target.value)} />
+                                            <TextFieldElement required fullWidth label={"Password"} className={"fullWidth"} type={'password'} name={'password'} onChange={(e) => setPassword(e.target.value)} />
 
-                                            <Button variant="contained" type={'submit'} >log in</Button>
+                                            <Button variant="contained" type={'submit'} >Log In</Button>
                                         </Stack>
                                     </FormContainer>
                                 </Container>
@@ -69,7 +122,13 @@ const Login = () => {
 
                 </Grid>
             </Box>
-
+            {showModal && 
+                    <BasicModal openModal={openModal}
+                    closeModal={closeModal}
+                    showModal={showModal}
+                    modalTitle={modalTitle}
+                    modalActions={modalActions} />
+                }
 
         </div>
     );
