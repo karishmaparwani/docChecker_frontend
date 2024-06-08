@@ -100,7 +100,8 @@ function HomePage() {
 
   return (
     <>
-        <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
+      <Box>
+      <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
             Home
         </Typography>
         <Box m={5} > 
@@ -151,6 +152,8 @@ function HomePage() {
             </Box>
             <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
         </Box>
+      </Box>
+        
         
     </>
   )

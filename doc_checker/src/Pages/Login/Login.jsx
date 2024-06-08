@@ -44,7 +44,7 @@ const Login = () => {
 
     useEffect(() => {
         if (data && Object.keys(data).length) {
-            sessionStorage.setItem('userInfo', JSON.stringify(data))
+            // sessionStorage.setItem('userInfo', JSON.stringify(data))
             dispatch(setUser(data))
             if(data.role === 'customer') {
                 navigate('/customer-home')
@@ -61,9 +61,8 @@ const Login = () => {
 
     useEffect(() => {
         if (error && Object.keys(error).length) {
-            console.log(error?.response?.data)
             if(error?.response?.data?.message === "UNAUTHORIZED") {
-                
+                setModalTitle("Incorrect Password. Please try again.")
             } else {
                 setModalTitle(error?.response?.data?.message)
             }
