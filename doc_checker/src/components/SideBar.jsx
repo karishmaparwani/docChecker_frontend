@@ -12,7 +12,6 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import Hidden from '@material-ui/core/Hidden';
 import logo from '../images/logo.png';  
 
 const useStyles = makeStyles((theme) => ({
@@ -39,13 +38,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: theme.spacing(2),
     fontWeight: 'bold',
-    fontSize: 48,
+    fontSize: 10,
     [theme.breakpoints.down('sm')]: {
-      fontSize: 24,
+      fontSize: 10,
     },
   },
   logo: {
     marginRight: theme.spacing(1),
+    width: '3rem',
+    height: '3rem'
   },
   avatar: {
     marginRight: theme.spacing(1),
@@ -77,10 +78,9 @@ const Sidebar = () => {
       }}
     >
       <div>
-        <div className={classes.toolbar} />
         <div className={classes.logoContainer}>
           <img src={logo} alt="Logo" className={classes.logo} />
-          <Typography variant="h5" style={{ fontSize: '48px', fontWeight: 'bold' }}>DocChecker</Typography>
+          <Typography variant="h5" style={{ fontSize: '24px', fontWeight: 'bold' }}>DocChecker</Typography>
         </div>
         <List className={classes.navList}>
           <ListItem button>
