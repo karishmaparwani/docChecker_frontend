@@ -43,7 +43,7 @@ export default function BasicTable({rows, columns, populateRows}) {
         rowsPerPageOptions={[5,10]}
         page={page}
         rowsPerPage={rowsPerPage}
-        count={rows.length}
+        count={rows?.length}
         component={'div'}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPage}

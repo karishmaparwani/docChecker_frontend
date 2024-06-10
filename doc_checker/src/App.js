@@ -16,6 +16,7 @@ import LandingPage from './Pages/LandingPage';
 import UploadDocument from './Pages/UploadDocument';
 import ExpertHomePage from './Pages/ExpertHomePage'
 import InvalidAccess from './Pages/InvalidAccess'
+import Logout from './Pages/Logout'
 import SideBar from './components/SideBar'
 import ProtectedRoutes from './components/ProtectedRoutes';
 import { makeStyles } from '@material-ui/core/styles';
@@ -37,7 +38,7 @@ const MainContent = ({ children }) => {
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const noSidebarPaths = ['/', '/login', '/signup-as', '/signup', '/expert/signup'];
+  const noSidebarPaths = ['/', '/login', '/signup-as', '/signup', '/expert/signup', '/logout'];
   const shouldShowSidebar = !noSidebarPaths.includes(location.pathname);
 
   return (
@@ -76,6 +77,8 @@ const App = () => {
             <Route path="/expert-home" element={<ProtectedRoutes Component={<ExpertHomePage />} allowCustomer={false} allowExpert={true} />} />
 
             <Route path="/invalid-access" element={<InvalidAccess />} />
+            
+            <Route path="/logout" element={<Logout />} />
 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

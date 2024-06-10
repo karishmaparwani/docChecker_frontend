@@ -9,6 +9,7 @@ import useAxios from '../../hooks/UseAxios.hook';
 
 const ExpertSignUp = () => {
     const [userData, setUserData] = useState({})
+    const [profile, setProfileData] = useState({})
     const [showModal, setShowModal] = useState(false)
     const { data, setBody, refetch } = useAxios({
         url: '/auth/expert/signup',
@@ -18,7 +19,10 @@ const ExpertSignUp = () => {
     });
 
     const handlePostData = () => {
-        setBody(userData)
+        setBody({
+            ...userData,
+            profile
+        })
 
     };
 
@@ -46,7 +50,7 @@ const ExpertSignUp = () => {
                             <Stack direction="column" justifyContent="center" alignItems="center">
                                 <Container maxWidth="sm">
                                     <SignUpStepper userData={userData} setUserData={setUserData} signUp={handlePostData}
-                                        showModal={showModal} />
+                                        showModal={showModal} profile={profile} setProfileData={setProfileData}/>
 
                                 </Container>
                                 <p>Already a member? <a href='/login'>Login</a></p>

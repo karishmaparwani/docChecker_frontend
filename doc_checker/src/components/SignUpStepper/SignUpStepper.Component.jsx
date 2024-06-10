@@ -1,24 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Stack, Button, Stepper, Step, StepLabel, Typography, Box } from '@mui/material';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom'
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui'
+import BasicModal from '../Modal';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
-function SignUpStepper({ userData, setUserData, signUp, showModal }) {
+function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setProfileData }) {
     const fileInputRef = React.useRef(null);
     const [activeStep, setActiveStep] = useState(0);
     const [passwordsMatch, setPasswordsMatch] = useState(false);
@@ -48,21 +36,21 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
         if (showModal === true) {
             setOpen(true);
         }
-        
+
     }, [showModal])
 
     const handleChange = (e) => {
         let { name, value } = e.target;
 
-        
+
 
         if (name === "confirmPassword") {
             setPasswordsMatch(isPasswordMatch(value))
         } else {
-            if(name === "yearsOfExperience" ) {
+            if (name === "yearsOfExperience") {
                 setUserData((prevUserData) => ({
                     ...prevUserData,
-                    ...{ "yearsOfExperience" : parseInt(value) },
+                    ...{ "yearsOfExperience": parseInt(value) },
                 }));
             }
             setUserData((prevUserData) => ({
@@ -70,6 +58,15 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
                 ...{ [name]: value },
             }));
         }
+    }
+
+    const handleProfileChange = (e) => {
+        let { name, value } = e.target;
+
+        setProfileData((prevUserData) => ({
+            ...prevUserData,
+            ...{ [name]: value },
+        }))
     }
 
     return (
@@ -123,12 +120,12 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
                             <Stack spacing={3} alignItems="center">
                                 <div style={{ 'width': '100%' }}>
                                     <label id="profile-summary">Profile Summary</label>
-                                    <textarea id="profile-summary" name="profileSummary" rows="6" style={{ 'width': '100%' }} onChange={handleChange}></textarea>
+                                    <textarea id="profile-summary" name="profileSummary" rows="6" style={{ 'width': '100%' }} onChange={handleProfileChange}></textarea>
                                 </div>
-                                <TextFieldElement fullWidth label={"Linked In Url"} id={"fullWidth"} type={'text'} name={"linkedInUrl"} onChange={handleChange} placeholder='https://linkedin.com/....' />
-                                <TextFieldElement fullWidth label={"Years of Experience"} id={"fullWidth"} type={'number'} name={"yearsOfExperience"} onChange={handleChange} required />
-                                <TextFieldElement fullWidth label={"Domain"} id={"fullWidth"} type={'text'} name={"domainOfExpertise"} onChange={handleChange} required />
-                                <TextFieldElement fullWidth label={"Industry"} id={"fullWidth"} type={'text'} name={"industry"} onChange={handleChange} required />
+                                <TextFieldElement fullWidth label={"Linked In Url"} id={"fullWidth"} type={'text'} name={"linkedInUrl"} onChange={handleProfileChange} placeholder='https://linkedin.com/....' />
+                                <TextFieldElement fullWidth label={"Years of Experience"} id={"fullWidth"} type={'number'} name={"yearsOfExperience"} onChange={handleProfileChange} required />
+                                <TextFieldElement fullWidth label={"Domain"} id={"fullWidth"} type={'text'} name={"domainOfExpertise"} onChange={handleProfileChange} required />
+                                <TextFieldElement fullWidth label={"Industry"} id={"fullWidth"} type={'text'} name={"industry"} onChange={handleProfileChange} required />
                                 <Stack direction="row" spacing={5} alignItems="center" justifyContent="flex-start" style={{ 'width': '100%' }}>
                                     <label id="profile-summary">Resume</label>
                                     <Button
@@ -140,18 +137,18 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
                                         onClick={() => fileInputRef.current.click()}
                                     >
                                         Upload file
-                                      
+
                                     </Button>
                                     <input
                                         type="file"
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
                                         name="resume"
-                                        onChange={handleChange}
+                                    // onChange={handleChange}
                                     />
-                                   <Typography >{userData?.resume}</Typography>
+                                    <Typography >{userData?.resume}</Typography>
                                 </Stack>
-                                
+
                                 <Button variant="contained" fullWidth={true} type={'submit'}>Sign Up</Button>
                             </Stack>
                         </FormContainer>}
@@ -174,19 +171,24 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
                 </React.Fragment>
             )}
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>{"Modal Title"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Thankyou for signing up as expert. Our team will get back to you shortly over email.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => navigate('/login')} color="primary" variant='contained'>
-                        Done
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {showModal &&
+                <BasicModal
+                    closeModal={handleClose}
+                    showModal={showModal}
+
+                    modalTitle={"Thank you for Signing up. Our team will get back to you shortly."}
+                    modalActions={(<>
+                        <Stack direction="row" sx={{ margin: 'auto' }}>
+                            <Button
+                                variant="contained"
+                                onClick={() => navigate('/login')}
+                            >
+                                Done
+                            </Button>
+                        </Stack>
+                    </>)}
+                />
+            }
         </div>
     )
 };

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography';
 import BasicTable from '../components/TableComponent';
 import Box from '@mui/material/Box';
@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import Alert from '@mui/material/Alert';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'; //Resume
@@ -15,57 +16,68 @@ import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutl
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { useNavigate } from "react-router-dom";
+import useAxios from '../hooks/UseAxios.hook'
 
-function createData(id, name, type, status) {
-    return { id, name, type, status};
-  }
+// function createData(id, name, type, status) {
+//     return { id, name, type, status};
+//   }
   
-  const rowsFromBackend = [
-    createData(1001, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1002, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1003, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1004, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1005, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-    createData(1006, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1007, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1008, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1009, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1010, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-    createData(1011, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1012, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1013, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1014, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1015, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-    createData(1016, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1017, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1018, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1019, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1020, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-  ];
+//   const rowsFromBackend = [
+//     createData(1001, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
+//     createData(1002, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
+//     createData(1003, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
+//     createData(1004, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
+//     createData(1005, 'Karishma_resume.pdf','Resume', 'Reviewed'),
+//     createData(1006, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
+//     createData(1007, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
+//     createData(1008, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
+//     createData(1009, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
+//     createData(1010, 'Karishma_resume.pdf','Resume', 'Reviewed'),
+//     createData(1011, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
+//     createData(1012, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
+//     createData(1013, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
+//     createData(1014, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
+//     createData(1015, 'Karishma_resume.pdf','Resume', 'Reviewed'),
+//     createData(1016, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
+//     createData(1017, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
+//     createData(1018, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
+//     createData(1019, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
+//     createData(1020, 'Karishma_resume.pdf','Resume', 'Reviewed'),
+//   ];
 
   const columns = ['Id','Document Name',`Type Of Document`, 'Status', '']
 
 function HomePage() {
-    const [rows, setRows] = React.useState([...rowsFromBackend])
+    const [rows, setRows] = React.useState([])
     const navigate = useNavigate();
+    
+    const {data} = useAxios({
+      url: '/user/reviews',
+      autoFetch: true
+    });
+
+    useEffect(() => {
+      setRows(data)
+    },[data])
+
 
     const filterCompletedDocs = () => {
-        let filteredData = rowsFromBackend.filter(row => row.status === 'Reviewed')
+        let filteredData = data.filter(row => row.status === 'Reviewed')
         setRows([...filteredData])
     }
 
     const filterPendingDocs = () => {
-        let filteredData = rowsFromBackend.filter(row => row.status === 'Pending')
+        let filteredData = data.filter(row => row.status === 'Pending')
         setRows([...filteredData])
     }
 
     const showAllDocs = () => {
-        setRows([...rowsFromBackend])
+        setRows([...data])
     }
 
     const populateRows = (page, rowsPerPage) => {
         return (
-            rows && rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+            rows?.length > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow
                   key={row.id}
                   sx={{  height: 80 }} 
@@ -94,7 +106,13 @@ function HomePage() {
                     <Button variant="contained" sx={{width: '12vw'}}>{row.status === 'Reviewed' ? 'View Feedback' : 'View Document'}</Button>
                   </TableCell>
                 </TableRow>
-              ))
+              )) : 
+              <TableRow>
+                <TableCell colSpan={7}>
+                  <Alert severity="error">No data to display.</Alert>
+                </TableCell>
+                  
+              </TableRow>
         )
     }
 

@@ -6,15 +6,18 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
-import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import logo from '../images/logo.png';  
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
+import BasicModal from './Modal';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import { setUser } from '../redux/slicer';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -68,17 +71,23 @@ const useStyles = makeStyles((theme) => ({
   },
   clickable: {
     cursor: 'pointer',
-    // display: 'flex',
-    // alignItems: 'center',
-    // textDecoration: 'none',
-    // color: 'inherit',
   },
 }));
 
 const Sidebar = () => {
   const classes = useStyles();
   const user = useSelector(state => state.user.user)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [showModal, setShowModal] = React.useState(false)
+
+  const openModal = () => {
+    setShowModal(true)
+}
+
+  const closeModal = () => {
+      setShowModal(false)
+  }
 
   const handleHomeClick = () => {
     if(user.role === 'customer') {
@@ -92,7 +101,16 @@ const Sidebar = () => {
     // }
   }
 
+
+
+  const handleLogout = () => {
+    console.log("Handle logout")
+    navigate('/logout')
+    dispatch(setUser({}))
+  }
+
   return (
+    <>
     <Drawer
       className={classes.drawer}
       variant="permanent"
@@ -132,7 +150,7 @@ const Sidebar = () => {
               <ListItemText primary="Settings" />
             </ListItem>
           </div>
-          <div className={classes.clickable} >
+          <div className={classes.clickable} onClick={openModal}>
             <ListItem>
               <ListItemIcon><ExitToAppIcon /></ListItemIcon>
               <ListItemText primary="Log out" />
@@ -141,6 +159,32 @@ const Sidebar = () => {
         </List>
       </div>
     </Drawer>
+    {showModal && 
+                    <BasicModal openModal={openModal}
+                    closeModal={closeModal}
+                    showModal={showModal}
+                  
+                    modalTitle={"Are you sure you want to logout?"}
+                    modalActions={(<>
+                      <Stack spacing={2} direction="row" sx={{margin: 'auto'}}>
+                          <Button
+                              variant="contained"
+                              onClick={handleLogout}
+                              >
+                                  Confirm
+                          </Button>
+                          <Button
+                              variant="contained"
+                              onClick={closeModal}
+                              >
+                                  Cancel
+                          </Button>
+                      </Stack>   
+                      </>)} 
+                    />
+                }
+    </>
+    
    
   );
 };

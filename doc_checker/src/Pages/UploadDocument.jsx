@@ -107,7 +107,7 @@ function UploadDocument() {
                     className="add-padding"
                     pt={5} pb={5}
                     >
-                    <Box p={3} sx={{ border: '1px solid #909090', height: '100%', minHeight: '50vh' }} >
+                    <Box p={3} sx={{ border: '1px solid #909090', height: '100%', minHeight: '40vh', minWidth: '50%' }} >
                         <MultiStepForm numberOfSteps={numberOfSteps} activeStep={activeStep} />
                         {activeStep === 0 && <ChooseDocument setDocType={setDocType} docType={docType} documentCategories={documentCategories}/>}
                         {activeStep === 1 &&

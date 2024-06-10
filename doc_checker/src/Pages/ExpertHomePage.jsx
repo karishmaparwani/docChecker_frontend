@@ -6,82 +6,93 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import Alert from '@mui/material/Alert';
 
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { useNavigate } from 'react-router-dom';
+import useAxios from '../hooks/UseAxios.hook'
 
-function createData(id, user_name, doc_name, type, status, date) {
-    return { id, user_name, doc_name, type, status, date};
-  }
+// function createData(id, user_name, doc_name, type, status, date) {
+//     return { id, user_name, doc_name, type, status, date};
+//   }
   
-  const rowsFromBackend = [
-    createData(1001, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-    createData(1002, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-    createData(1003, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-    createData(1004, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-    createData(1005, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-    createData(1006, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-    createData(1007, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-    createData(1008, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-    createData(1009, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-    createData(1010, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-    createData(1011, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-    createData(1012, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-    createData(1013, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-    createData(1014, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-    createData(1015, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-    createData(1016, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-    createData(1017, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-    createData(1018, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-    createData(1019, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-    createData(1020, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-  ];
+//   const rowsFromBackend = [
+//     createData(1001, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//     createData(1002, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
+//     createData(1003, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
+//     createData(1004, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
+//     createData(1005, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//     createData(1006, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//     createData(1007, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
+//     createData(1008, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
+//     createData(1009, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
+//     createData(1010, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//     createData(1011, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//     createData(1012, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
+//     createData(1013, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
+//     createData(1014, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
+//     createData(1015, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//     createData(1016, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//     createData(1017, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
+//     createData(1018, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
+//     createData(1019, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
+//     createData(1020, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
+//   ];
 
-  const columns = ['Id','User Name', 'Document Name', `Type Of Document`, 'Status', 'Created Date', '']
+const columns = ['Id','User Name', 'Document Name', `Type Of Document`, 'Status', 'Created Date', '']
 
 function HomePage() {
-    const [rows, setRows] = React.useState([...rowsFromBackend])
     const navigate = useNavigate()
     const [searchQuery, setSearchQuery] = React.useState('');
-
+    const {data} = useAxios({
+      url: '/user/reviews',
+      autoFetch: true
+    });
 
     const handleSearchChange = (event) => {
       setSearchQuery(event.target.value);
     };
 
-    const filteredRows = rows.filter((row) =>
+    const filteredRows = data?.filter((row) =>
         row.doc_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const populateRows = (page, rowsPerPage) => {
         return (
-          filteredRows && filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+          filteredRows?.length > 0 ?   filteredRows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.docId}
                   sx={{  height: 80 }} 
                 >
                   <TableCell >
-                    {row.id}
+                    {row.docId}
                   </TableCell>
                   <TableCell>
-                    {row.user_name}
+                    {row.createdBy}
                   </TableCell>
-                  <TableCell ><Button sx={{textTransform: 'none'}}>{row.doc_name}</Button></TableCell>
-                  <TableCell >{row.type}</TableCell>
-                  <TableCell >{row.status}</TableCell>
-                  <TableCell >{row.date}</TableCell>
+                  <TableCell ><Button sx={{textTransform: 'none'}}>{row.attachment_name}</Button></TableCell>
+                  <TableCell >{row.docType}</TableCell>
+                  <TableCell >{row.reviewStatus}</TableCell>
+                  <TableCell >{row.createdAt}</TableCell>
                   <TableCell align='right'>
                     <Button 
                       variant="contained" 
                       sx={{width: '12vw'}}
                       onClick={() => navigate('/document-review')}
                       >
-                        {row.status === 'Reviewed' ? 'View Feedback' : 'Review'}
+                        {row.reviewStatus === 'Reviewed' ? 'View Feedback' : 'Review'}
                       </Button>
                   </TableCell>
                 </TableRow>
-              ))
+              )) : 
+              <TableRow>
+                <TableCell colSpan={7}>
+                  <Alert severity="error">No data to display.</Alert>
+                </TableCell>
+                  
+              </TableRow>
+              
         )
     }
 
@@ -108,7 +119,10 @@ function HomePage() {
                         />
                 </Stack>
             </Box>
-            <BasicTable rows={filteredRows} columns={columns} populateRows={populateRows}/>
+            
+                <BasicTable rows={filteredRows} columns={columns} populateRows={populateRows}/>
+           
+            
         </Box>
         
     </>
