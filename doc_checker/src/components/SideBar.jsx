@@ -66,6 +66,13 @@ const useStyles = makeStyles((theme) => ({
   navList: {
     flex: 1,
   },
+  clickable: {
+    cursor: 'pointer',
+    // display: 'flex',
+    // alignItems: 'center',
+    // textDecoration: 'none',
+    // color: 'inherit',
+  },
 }));
 
 const Sidebar = () => {
@@ -99,14 +106,13 @@ const Sidebar = () => {
           <Typography variant="h5" style={{ fontSize: '24px', fontWeight: 'bold' }}>DocChecker</Typography>
         </div>
         <List className={classes.navList}>
-          <ListItem button onClick={handleHomeClick}>
-            <ListItemIcon><HomeIcon /></ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-          {/* <ListItem button>
-            <ListItemIcon><DescriptionIcon /></ListItemIcon>
-            <ListItemText primary="Upload Document" />
-          </ListItem> */}
+          <div className={classes.clickable} onClick={handleHomeClick}>
+            <ListItem >
+              <ListItemIcon><HomeIcon /></ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+          </div>
+          
         </List>
       </div>
       <div>
@@ -120,17 +126,22 @@ const Sidebar = () => {
         </div>
         <Divider />
         <List>
-          <ListItem button>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
-            <ListItemText primary="Settings" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
-            <ListItemText primary="Log out" />
-          </ListItem>
+          <div className={classes.clickable} >
+            <ListItem>
+              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemText primary="Settings" />
+            </ListItem>
+          </div>
+          <div className={classes.clickable} >
+            <ListItem>
+              <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+              <ListItemText primary="Log out" />
+            </ListItem>
+          </div>
         </List>
       </div>
     </Drawer>
+   
   );
 };
 
