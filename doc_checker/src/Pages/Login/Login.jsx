@@ -49,7 +49,7 @@ const Login = () => {
             if(data.role === 'customer') {
                 navigate('/customer-home')
             }
-            if(data.role === 'expert') {
+            if(data.role === 'moderator') {
                 navigate('/expert-home')
             }
             // if(data.role === 'admin') {

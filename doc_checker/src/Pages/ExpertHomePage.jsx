@@ -9,6 +9,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
+import { useNavigate } from 'react-router-dom';
 
 function createData(id, user_name, doc_name, type, status, date) {
     return { id, user_name, doc_name, type, status, date};
@@ -41,11 +42,21 @@ function createData(id, user_name, doc_name, type, status, date) {
 
 function HomePage() {
     const [rows, setRows] = React.useState([...rowsFromBackend])
+    const navigate = useNavigate()
+    const [searchQuery, setSearchQuery] = React.useState('');
 
+
+    const handleSearchChange = (event) => {
+      setSearchQuery(event.target.value);
+    };
+
+    const filteredRows = rows.filter((row) =>
+        row.doc_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const populateRows = (page, rowsPerPage) => {
         return (
-            rows && rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+          filteredRows && filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow
                   key={row.id}
                   sx={{  height: 80 }} 
@@ -61,7 +72,13 @@ function HomePage() {
                   <TableCell >{row.status}</TableCell>
                   <TableCell >{row.date}</TableCell>
                   <TableCell align='right'>
-                    <Button variant="contained" sx={{width: '12vw'}}>{row.status === 'Reviewed' ? 'View Feedback' : 'Review'}</Button>
+                    <Button 
+                      variant="contained" 
+                      sx={{width: '12vw'}}
+                      onClick={() => navigate('/document-review')}
+                      >
+                        {row.status === 'Reviewed' ? 'View Feedback' : 'Review'}
+                      </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -81,6 +98,8 @@ function HomePage() {
                         id="outlined-start-adornment"
                         size='small'
                         sx={{ width: '25ch' }}
+                        value={searchQuery}
+                        onChange={handleSearchChange}
                         InputProps={{
                             startAdornment: <InputAdornment position="start">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1976d2"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -89,7 +108,7 @@ function HomePage() {
                         />
                 </Stack>
             </Box>
-            <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
+            <BasicTable rows={filteredRows} columns={columns} populateRows={populateRows}/>
         </Box>
         
     </>

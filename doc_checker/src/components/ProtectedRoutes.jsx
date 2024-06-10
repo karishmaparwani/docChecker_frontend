@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import InvalidAccess from '../Pages/InvalidAccess'
 
 function ProtectedRoutes({ Component, allowCustomer, allowExpert }) {
     const navigate = useNavigate()
@@ -12,7 +13,7 @@ function ProtectedRoutes({ Component, allowCustomer, allowExpert }) {
             navigate('/login')
         } else {
             if ((user.role === 'customer' && !allowCustomer) || 
-                (user.role === 'expert' && !allowExpert)) {
+                (user.role === 'moderator' && !allowExpert)) {
                 navigate('/invalid-access')
             }
         }
@@ -20,12 +21,12 @@ function ProtectedRoutes({ Component, allowCustomer, allowExpert }) {
 
     const hasAccess = user?.accessToken && (
         (user.role === 'customer' && allowCustomer) ||
-        (user.role === 'expert' && allowExpert)
+        (user.role === 'moderator' && allowExpert)
     );
 
   return (
     <>
-        {hasAccess ? Component : null}
+        {hasAccess ? Component : <InvalidAccess />}
     </>
   )
 }

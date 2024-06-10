@@ -13,6 +13,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import logo from '../images/logo.png';  
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -68,6 +70,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Sidebar = () => {
   const classes = useStyles();
+  const user = useSelector(state => state.user.user)
+  const navigate = useNavigate()
+
+  const handleHomeClick = () => {
+    if(user.role === 'customer') {
+      navigate('/customer-home')
+    }
+    if(user.role === 'moderator') {
+      navigate('/expert-home')
+    }
+    // if(user.role === 'admin') {
+    //   navigate('/admin-home')
+    // }
+  }
 
   return (
     <Drawer
@@ -83,23 +99,23 @@ const Sidebar = () => {
           <Typography variant="h5" style={{ fontSize: '24px', fontWeight: 'bold' }}>DocChecker</Typography>
         </div>
         <List className={classes.navList}>
-          <ListItem button>
+          <ListItem button onClick={handleHomeClick}>
             <ListItemIcon><HomeIcon /></ListItemIcon>
             <ListItemText primary="Home" />
           </ListItem>
-          <ListItem button>
+          {/* <ListItem button>
             <ListItemIcon><DescriptionIcon /></ListItemIcon>
             <ListItemText primary="Upload Document" />
-          </ListItem>
+          </ListItem> */}
         </List>
       </div>
       <div>
         <Divider />
         <div className={classes.userInfo}>
-          <Avatar className={classes.avatar}>R</Avatar>
+          <Avatar className={classes.avatar}>{user?.firstname?.charAt(0).toUpperCase()}</Avatar>
           <div className={classes.userNameEmail}>
-            <Typography variant="body1">Rangoli</Typography>
-            <Typography variant="body2">rkapil@gmail.com</Typography>
+            <Typography variant="body1">{user?.username}</Typography>
+            <Typography variant="body2">{user?.emailId}</Typography>
           </div>
         </div>
         <Divider />

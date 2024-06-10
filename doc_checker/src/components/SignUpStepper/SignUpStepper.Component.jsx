@@ -19,6 +19,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 function SignUpStepper({ userData, setUserData, signUp, showModal }) {
+    const fileInputRef = React.useRef(null);
     const [activeStep, setActiveStep] = useState(0);
     const [passwordsMatch, setPasswordsMatch] = useState(false);
     const [open, setOpen] = React.useState(false);
@@ -53,9 +54,17 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
     const handleChange = (e) => {
         let { name, value } = e.target;
 
+        
+
         if (name === "confirmPassword") {
             setPasswordsMatch(isPasswordMatch(value))
         } else {
+            if(name === "yearsOfExperience" ) {
+                setUserData((prevUserData) => ({
+                    ...prevUserData,
+                    ...{ "yearsOfExperience" : parseInt(value) },
+                }));
+            }
             setUserData((prevUserData) => ({
                 ...prevUserData,
                 ...{ [name]: value },
@@ -94,11 +103,11 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
                             onSuccess={handleNext}
                         >
                             <Stack spacing={3} alignItems="center">
-                                <TextFieldElement fullWidth label={"Fitstname"} id={"fullWidth"} type={'text'} name={"firstname"} onChange={handleChange} required />
-                                <TextFieldElement fullWidth label={"Lastname"} id={"fullWidth"} type={'text'} name={"lastname"} onChange={handleChange} required />
-                                <TextFieldElement fullWidth label={"Email-Id"} id={"fullWidth"} type={'email'} name={"emailid"} onChange={handleChange} required />
-                                <TextFieldElement fullWidth label={"Username"} id={"fullWidth"} type={'text'} name={"username"} onChange={handleChange} required />
-                                <TextFieldElement fullWidth label={"Password"} id={"fullWidth"} type={'password'} name={"password"} onChange={handleChange} required />
+                                <TextFieldElement fullWidth label={"Firstname"} className={"fullWidth"} type={'text'} name={"firstname"} onChange={handleChange} required />
+                                <TextFieldElement fullWidth label={"Lastname"} className={"fullWidth"} type={'text'} name={"lastname"} onChange={handleChange} required />
+                                <TextFieldElement fullWidth label={"Email-Id"} className={"fullWidth"} type={'email'} name={"emailId"} onChange={handleChange} required />
+                                <TextFieldElement fullWidth label={"Username"} className={"fullWidth"} type={'text'} name={"username"} onChange={handleChange} required />
+                                <TextFieldElement fullWidth label={"Password"} className={"fullWidth"} type={'password'} name={"password"} onChange={handleChange} required />
                                 <TextFieldElement fullWidth label={"Confirm Password"} id={"fullWidth"} type={'password'} name={"confirmPassword"} onChange={handleChange} required />
                                 {passwordsMatch && <p>Passwords Match</p>}
                                 <Button variant='contained' fullWidth type={'submit'}>Next </Button>
@@ -128,12 +137,21 @@ function SignUpStepper({ userData, setUserData, signUp, showModal }) {
                                         variant="contained"
                                         tabIndex={-1}
                                         startIcon={<CloudUploadIcon />}
+                                        onClick={() => fileInputRef.current.click()}
                                     >
                                         Upload file
-                                        <VisuallyHiddenInput type="file" />
+                                      
                                     </Button>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        style={{ display: 'none' }}
+                                        name="resume"
+                                        onChange={handleChange}
+                                    />
+                                   <Typography >{userData?.resume}</Typography>
                                 </Stack>
-
+                                
                                 <Button variant="contained" fullWidth={true} type={'submit'}>Sign Up</Button>
                             </Stack>
                         </FormContainer>}

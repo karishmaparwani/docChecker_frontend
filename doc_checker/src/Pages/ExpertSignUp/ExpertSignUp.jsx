@@ -19,7 +19,6 @@ const ExpertSignUp = () => {
 
     const handlePostData = () => {
         setBody(userData)
-        refetch();
 
     };
 
