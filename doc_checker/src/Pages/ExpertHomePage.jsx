@@ -14,6 +14,7 @@ import TableCell from '@mui/material/TableCell';
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../hooks/UseAxios.hook'
 import { REVIEW_STATUS } from '../Constants'
+import { formatDate } from '../utils'
 
 const columns = ['Id','User Name', 'Document Name', `Type Of Document`, 'Status', 'Created Date', '']
 
@@ -73,7 +74,7 @@ function HomePage() {
                   <TableCell ><Button sx={{textTransform: 'none'}} onClick={() => showDocumentDescription(row)}>{row.attachment_name}</Button></TableCell>
                   <TableCell >{row.docType}</TableCell>
                   <TableCell >{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed' : 'Pending'}</TableCell>
-                  <TableCell >{row.createdAt}</TableCell>
+                  <TableCell >{formatDate(row.createdAt)}</TableCell>
                   <TableCell align='right'>
                     <Button 
                       variant="contained" 
