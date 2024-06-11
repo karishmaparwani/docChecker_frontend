@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from '@mui/material/Alert';
+import BasicModal from '../components/Modal';
 
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
@@ -19,17 +20,41 @@ const columns = ['Id','User Name', 'Document Name', `Type Of Document`, 'Status'
 function HomePage() {
     const navigate = useNavigate()
     const [searchQuery, setSearchQuery] = React.useState('');
+    const [showModal, setShowModal] = React.useState(false)
+    const [modalTitle, setModalTitle] = React.useState('')
+    const [modalContent, setModalContent] = React.useState()
     const {data} = useAxios({
       url: '/user/reviews',
       autoFetch: true
     });
+
+    const openModal = () => {
+      setShowModal(true)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+    }
+
+    const showDocumentDescription = (row) => {
+      setModalTitle(row.description)
+      setModalContent(<>
+      <div>
+        <b>Experience: </b> {row.relevantExp}
+      </div>
+      <div>
+        <b>Reason for review: </b> {row.reasonForReview}
+      </div>
+      </>)
+      openModal()
+    }
 
     const handleSearchChange = (event) => {
       setSearchQuery(event.target.value);
     };
 
     const filteredRows = data?.filter((row) =>
-        row.doc_name.toLowerCase().includes(searchQuery.toLowerCase())
+        row.attachment_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const populateRows = (page, rowsPerPage) => {
@@ -45,7 +70,7 @@ function HomePage() {
                   <TableCell>
                     {row.createdBy}
                   </TableCell>
-                  <TableCell ><Button sx={{textTransform: 'none'}}>{row.attachment_name}</Button></TableCell>
+                  <TableCell ><Button sx={{textTransform: 'none'}} onClick={() => showDocumentDescription(row)}>{row.attachment_name}</Button></TableCell>
                   <TableCell >{row.docType}</TableCell>
                   <TableCell >{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed' : 'Pending'}</TableCell>
                   <TableCell >{row.createdAt}</TableCell>
@@ -98,6 +123,24 @@ function HomePage() {
            
             
         </Box>
+        {showModal && 
+          <BasicModal openModal={openModal}
+          closeModal={closeModal}
+          showModal={showModal}
+          modalContent={modalContent}
+          modalTitle={modalTitle}
+          modalActions={(<>
+            <Stack direction="row" sx={{margin: 'auto'}}>
+                <Button
+                    variant="contained"
+                    onClick={closeModal}
+                    >
+                        Done
+                </Button>
+            </Stack>
+            </>)} 
+          />
+      } 
         
     </>
   )

@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from '@mui/material/Alert';
+import BasicModal from '../components/Modal';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'; //Resume
@@ -24,7 +25,18 @@ const columns = ['Id','Document Name',`Type Of Document`, 'Status', '']
 
 function HomePage() {
     const [rows, setRows] = React.useState([])
+    const [searchQuery, setSearchQuery] = React.useState('');
     const navigate = useNavigate();
+    const [showModal, setShowModal] = React.useState(false)
+    const [modalTitle, setModalTitle] = React.useState('')
+
+    const openModal = () => {
+      setShowModal(true)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+    }
     
     const {data} = useAxios({
       url: '/user/reviews',
@@ -35,6 +47,20 @@ function HomePage() {
       setRows(data)
     },[data])
 
+    const showDocumentDescription = (row) => {
+      setModalTitle(row.description)
+      openModal()
+    }
+
+    const handleSearchChange = (event) => {
+      setSearchQuery(event.target.value);
+      filteredRows()
+    };
+
+    const filteredRows = () => {
+      const filteredData = data?.filter((row) => row.attachment_name.toLowerCase().includes(searchQuery.toLowerCase()))
+      setRows(filteredData)
+    }
 
     const filterCompletedDocs = () => {
         let filteredData = data.filter(row => row.reviewStatus === REVIEW_STATUS.COMPLETED)
@@ -52,7 +78,7 @@ function HomePage() {
 
     const populateRows = (page, rowsPerPage) => {
         return (
-            rows?.length > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+          rows?.length > 0 ? rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow
                   key={row.docId}
                   sx={{  height: 80 }} 
@@ -69,7 +95,11 @@ function HomePage() {
                         {row.docType === DOCUMENT_TYPES.PRD && <DocumentScannerOutlinedIcon fontSize='large' />}
                       </Grid>
                       <Grid xs={10}>
-                        <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>{row.attachment_name}</Grid>
+                        <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>
+                          <Button sx={{ textTransform: 'none' }} onClick={() => showDocumentDescription(row)}>
+                            {row.attachment_name}
+                          </Button>
+                        </Grid>
                         <Grid xs={12}>{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed by expert' : 'Pending for Review'}</Grid>
                       </Grid>
                     </Grid>  
@@ -133,6 +163,8 @@ function HomePage() {
                         id="outlined-start-adornment"
                         size='small'
                         sx={{ width: '25ch' }}
+                        value={searchQuery}
+                        onChange={handleSearchChange}
                         InputProps={{
                             startAdornment: <InputAdornment position="start">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1976d2"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -152,7 +184,24 @@ function HomePage() {
             <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
         </Box>
       </Box>
+      {showModal && 
+          <BasicModal openModal={openModal}
+          closeModal={closeModal}
+          showModal={showModal}
         
+          modalTitle={modalTitle}
+          modalActions={(<>
+            <Stack direction="row" sx={{margin: 'auto'}}>
+                <Button
+                    variant="contained"
+                    onClick={closeModal}
+                    >
+                        Done
+                </Button>
+            </Stack>
+            </>)} 
+          />
+      } 
         
     </>
   )
