@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import image from '../../images/landing_page_img.png'
-import '../SignUpAsPage.css'
+import '../SignUpAs/SignUpAsPage.css'
 import { Stack, Button, Container } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui'
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ const SignUp = () => {
     const [modalActions, setModalActions] = React.useState()
     const [modalTitle, setModalTitle] = React.useState('')
     const [passwordsMatch, setPasswordsMatch] = useState(false);
-    const { data, error, setBody, refetch } = useAxios({
+    const { data, error, setBody } = useAxios({
         url: '/auth/signup',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,7 +66,7 @@ const SignUp = () => {
             setShowModal(true)
         }
         
-    }, [data, navigate]);
+    }, [data]);
 
     useEffect(() => {
         if (error && Object.keys(error).length) {

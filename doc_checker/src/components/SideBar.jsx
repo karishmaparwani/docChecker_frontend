@@ -18,6 +18,7 @@ import BasicModal from './Modal';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { setUser } from '../redux/slicer';
+import { ROLES } from '../Constants'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -90,13 +91,13 @@ const Sidebar = () => {
   }
 
   const handleHomeClick = () => {
-    if(user.role === 'customer') {
+    if(user.role === ROLES.CUSTOMER) {
       navigate('/customer-home')
     }
-    if(user.role === 'moderator') {
+    if(user.role === ROLES.EXPERT) {
       navigate('/expert-home')
     }
-    // if(user.role === 'admin') {
+    // if(user.role === ROLES.ADMIN) {
     //   navigate('/admin-home')
     // }
   }

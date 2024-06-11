@@ -17,35 +17,10 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { useNavigate } from "react-router-dom";
 import useAxios from '../hooks/UseAxios.hook'
+import { DOCUMENT_TYPES, REVIEW_STATUS } from '../Constants'
 
-// function createData(id, name, type, status) {
-//     return { id, name, type, status};
-//   }
-  
-//   const rowsFromBackend = [
-//     createData(1001, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-//     createData(1002, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-//     createData(1003, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-//     createData(1004, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-//     createData(1005, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-//     createData(1006, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-//     createData(1007, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-//     createData(1008, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-//     createData(1009, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-//     createData(1010, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-//     createData(1011, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-//     createData(1012, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-//     createData(1013, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-//     createData(1014, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-//     createData(1015, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-//     createData(1016, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-//     createData(1017, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-//     createData(1018, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-//     createData(1019, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-//     createData(1020, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-//   ];
 
-  const columns = ['Id','Document Name',`Type Of Document`, 'Status', '']
+const columns = ['Id','Document Name',`Type Of Document`, 'Status', '']
 
 function HomePage() {
     const [rows, setRows] = React.useState([])
@@ -62,12 +37,12 @@ function HomePage() {
 
 
     const filterCompletedDocs = () => {
-        let filteredData = data.filter(row => row.status === 'Reviewed')
+        let filteredData = data.filter(row => row.reviewStatus === REVIEW_STATUS.COMPLETED)
         setRows([...filteredData])
     }
 
     const filterPendingDocs = () => {
-        let filteredData = data.filter(row => row.status === 'Pending')
+        let filteredData = data.filter(row => row.reviewStatus === REVIEW_STATUS.INPROGRESS)
         setRows([...filteredData])
     }
 
@@ -79,31 +54,37 @@ function HomePage() {
         return (
             rows?.length > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.docId}
                   sx={{  height: 80 }} 
                 >
                   <TableCell >
-                    {row.id}
+                    {row.docId}
                   </TableCell>
                   <TableCell scope='row'>
                     <Grid container spacing={2}>
                       <Grid xs={2} pt={2}>
-                        {row.type === 'Resume' && <DescriptionOutlinedIcon fontSize='large'/>}
-                        {row.type === 'College Application Essay' && <AssignmentOutlinedIcon fontSize='large' />}
-                        {row.type === 'Letter Of Recommendation' && <DraftsOutlinedIcon fontSize='large' />}
-                        {row.type === 'Product Requirement Document' && <DocumentScannerOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.RESUME && <DescriptionOutlinedIcon fontSize='large'/>}
+                        {row.docType === DOCUMENT_TYPES.COL_APP && <AssignmentOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.LOR && <DraftsOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.PRD && <DocumentScannerOutlinedIcon fontSize='large' />}
                       </Grid>
                       <Grid xs={10}>
-                        <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>{row.name}</Grid>
-                        <Grid xs={12}>{row.status === 'Reviewed' ? 'Reviewed by expert' : 'Pending for Review'}</Grid>
+                        <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>{row.attachment_name}</Grid>
+                        <Grid xs={12}>{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed by expert' : 'Pending for Review'}</Grid>
                       </Grid>
                     </Grid>  
                   
                   </TableCell>
-                  <TableCell >{row.type}</TableCell>
-                  <TableCell >{row.status}</TableCell>
+                  <TableCell >{row.docType}</TableCell>
+                  <TableCell >{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed' : 'In Progress'}</TableCell>
                   <TableCell align='right'>
-                    <Button variant="contained" sx={{width: '12vw'}}>{row.status === 'Reviewed' ? 'View Feedback' : 'View Document'}</Button>
+                    <Button 
+                    variant="contained" 
+                    sx={{width: '12vw'}}
+                    onClick={() => navigate('/document-review')}
+                    >
+                      {row.status === REVIEW_STATUS.COMPLETED ? 'View Feedback' : 'View Document'}
+                    </Button>
                   </TableCell>
                 </TableRow>
               )) : 

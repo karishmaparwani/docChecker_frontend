@@ -10,8 +10,7 @@ import '../styles/UploadDocument.css'
 import UploadPDF from '../components/UploadPDF';
 import SubmitPDF from '../components/SubmitPDF'
 import { useNavigate } from "react-router-dom";
-
-const documentCategories = ['College Application Essay', 'Letter Of Recommendation', 'Resume', 'Product Requirement Document']
+import { DOCUMENT_TYPES } from '../Constants'
 
 const ResumeQuestionaire = {
     q1: 'Number of years of relevant experience',
@@ -55,16 +54,16 @@ function UploadDocument() {
     const navigate = useNavigate();
 
     const sendQuestionaire = () => {
-        if(docType === 'College Application Essay') {
+        if(docType === DOCUMENT_TYPES.COL_APP) {
             return CollegeEssayQuestionaire
         }
-        if(docType === 'Letter Of Recommendation') {
+        if(docType === DOCUMENT_TYPES.LOR) {
             return LORQuestionaire
         }
-        if(docType === 'Resume') {
+        if(docType === DOCUMENT_TYPES.RESUME) {
             return ResumeQuestionaire
         }
-        if(docType === 'Product Requirement Document') {
+        if(docType === DOCUMENT_TYPES.PRD) {
             return PRDQuestionaire
         }
 
@@ -77,7 +76,6 @@ function UploadDocument() {
     const handleNext = () => {
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        console.log("docType->", docType)
 
     };
 
@@ -109,7 +107,7 @@ function UploadDocument() {
                     >
                     <Box p={3} sx={{ border: '1px solid #909090', height: '100%', minHeight: '40vh', minWidth: '50%' }} >
                         <MultiStepForm numberOfSteps={numberOfSteps} activeStep={activeStep} />
-                        {activeStep === 0 && <ChooseDocument setDocType={setDocType} docType={docType} documentCategories={documentCategories}/>}
+                        {activeStep === 0 && <ChooseDocument setDocType={setDocType} docType={docType} documentCategories={Object.keys(DOCUMENT_TYPES)}/>}
                         {activeStep === 1 &&
                             <GatherDocDetails 
                                 yearsOfExperience={yearsOfExperience} setYearsOfExperience={setYearsOfExperience}
@@ -124,14 +122,14 @@ function UploadDocument() {
                         <Stack spacing={10} direction="row" mt={5} sx={{ justifyContent: 'center' }}>
                             {activeStep !== numberOfSteps - 1 ?
                             <>
-                                <Button sx={{ width: '20vw' }}
+                                <Button sx={{ width: '15vw' }}
                                     variant="contained"
                                     disabled={activeStep === 0}
                                     onClick={handleBack}
                                 >
                                     Back
                                 </Button>
-                                <Button sx={{ width: '20vw' }}
+                                <Button sx={{ width: '15vw' }}
                                     variant="contained"
                                     disabled={isNextDisabled}
                                     onClick={handleNext}
@@ -139,7 +137,7 @@ function UploadDocument() {
                                     {activeStep === numberOfSteps - 2 ? 'Submit' : 'Next'}
                                 </Button>
                             </> :
-                            <Button sx={{ width: '20vw' }}
+                            <Button sx={{ width: '15vw' }}
                                 variant="contained"
                                 disabled={isNextDisabled}
                                 onClick={() => navigate("/customer-home")}

@@ -3,6 +3,7 @@ import { Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { DOCUMENT_TYPES } from '../Constants'
 
 function ChooseDocument({ docType, setDocType, documentCategories }) {
     const displayCategories = () => {
@@ -10,18 +11,18 @@ function ChooseDocument({ docType, setDocType, documentCategories }) {
         for(let i=0; i<documentCategories.length; i+=2) {
             buttonChunk.push(
                 <Stack key={i} mt={5} spacing={3} direction="row">
-                    <Button sx={{ width: '15vw', backgroundColor: docType === documentCategories[i] ? '#6FA5ED' : '#E4E6EA', color: docType === 'College Application Essay' ? '#FFFFFF' : '#030303' }}
+                    <Button sx={{ width: '15vw', backgroundColor: docType === DOCUMENT_TYPES[documentCategories[i]] ? '#6FA5ED' : '#E4E6EA', color: docType === DOCUMENT_TYPES[documentCategories[i]] ? '#FFFFFF' : '#030303' }}
                             variant="contained"
-                            onClick={() => setDocType(documentCategories[i])}
+                            onClick={() => setDocType(DOCUMENT_TYPES[documentCategories[i]])}
                         >
-                            {documentCategories[i]}
+                            {DOCUMENT_TYPES[documentCategories[i]]}
                     </Button>
                     { i+1 < documentCategories.length &&
-                        <Button sx={{ width: '15vw', backgroundColor: docType === documentCategories[i+1] ? '#6FA5ED' : '#E4E6EA', color: docType === 'College Application Essay' ? '#FFFFFF' : '#030303' }}
+                        <Button sx={{ width: '15vw', backgroundColor: docType === DOCUMENT_TYPES[documentCategories[i+1]] ? '#6FA5ED' : '#E4E6EA', color: docType === DOCUMENT_TYPES[documentCategories[i+1]] ? '#FFFFFF' : '#030303' }}
                             variant="contained"
-                            onClick={() => setDocType(documentCategories[i+1])}
+                            onClick={() => setDocType(DOCUMENT_TYPES[documentCategories[i+1]])}
                         >
-                            {documentCategories[i+1]}
+                            {DOCUMENT_TYPES[documentCategories[i+1]]}
                         </Button>
                     }
                     

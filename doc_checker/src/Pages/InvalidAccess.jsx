@@ -1,13 +1,10 @@
 import React from 'react'
 import BasicModal from '../components/Modal';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, } from 'react-redux';
 import { setUser } from '../redux/slicer';
 import { Stack, Button } from '@mui/material';
 
 function InvalidAccess() {
-    console.log("Invalid Access")
-    const navigate = useNavigate()
     const dispatch = useDispatch()
     
     const moveToLogin = () => {

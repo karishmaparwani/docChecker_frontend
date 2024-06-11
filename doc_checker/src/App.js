@@ -6,7 +6,7 @@ import {
   Navigate,
   useLocation
 } from "react-router-dom";
-import SignUpAsPage from './Pages/SignUpAsPage';
+import SignUpAsPage from './Pages/SignUpAs/SignUpAsPage';
 import SignUp from './Pages/SignUp/SignUp';
 import ExpertSignUp from './Pages/ExpertSignUp/ExpertSignUp';
 import Login from './Pages/Login/Login';

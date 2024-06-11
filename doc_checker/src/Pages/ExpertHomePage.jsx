@@ -12,33 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../hooks/UseAxios.hook'
-
-// function createData(id, user_name, doc_name, type, status, date) {
-//     return { id, user_name, doc_name, type, status, date};
-//   }
-  
-//   const rowsFromBackend = [
-//     createData(1001, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//     createData(1002, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-//     createData(1003, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-//     createData(1004, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-//     createData(1005, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//     createData(1006, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//     createData(1007, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-//     createData(1008, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-//     createData(1009, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-//     createData(1010, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//     createData(1011, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//     createData(1012, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-//     createData(1013, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-//     createData(1014, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-//     createData(1015, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//     createData(1016, 'Mark Twain', 'rangoli_jain_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//     createData(1017, 'Mark Twain', 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending', 'May 29, 2024'),
-//     createData(1018, 'Mark Twain', 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed', 'May 29, 2024'),
-//     createData(1019, 'Mark Twain', 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending', 'May 29, 2024'),
-//     createData(1020, 'Mark Twain', 'Karishma_resume.pdf','Resume', 'Reviewed', 'May 29, 2024'),
-//   ];
+import { REVIEW_STATUS } from '../Constants'
 
 const columns = ['Id','User Name', 'Document Name', `Type Of Document`, 'Status', 'Created Date', '']
 
@@ -73,7 +47,7 @@ function HomePage() {
                   </TableCell>
                   <TableCell ><Button sx={{textTransform: 'none'}}>{row.attachment_name}</Button></TableCell>
                   <TableCell >{row.docType}</TableCell>
-                  <TableCell >{row.reviewStatus}</TableCell>
+                  <TableCell >{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed' : 'Pending'}</TableCell>
                   <TableCell >{row.createdAt}</TableCell>
                   <TableCell align='right'>
                     <Button 
@@ -81,7 +55,7 @@ function HomePage() {
                       sx={{width: '12vw'}}
                       onClick={() => navigate('/document-review')}
                       >
-                        {row.reviewStatus === 'Reviewed' ? 'View Feedback' : 'Review'}
+                        {row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'View Feedback' : 'Review'}
                       </Button>
                   </TableCell>
                 </TableRow>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import image from '../../images/landing_page_img.png'
-import '../SignUpAsPage.css'
+import '../SignUpAs/SignUpAsPage.css'
 import { Stack, Container } from '@mui/material';
 import SignUpStepper from '../../components/SignUpStepper/SignUpStepper.Component'
 import useAxios from '../../hooks/UseAxios.hook';
@@ -11,7 +11,7 @@ const ExpertSignUp = () => {
     const [userData, setUserData] = useState({})
     const [profile, setProfileData] = useState({})
     const [showModal, setShowModal] = useState(false)
-    const { data, setBody, refetch } = useAxios({
+    const { data, setBody } = useAxios({
         url: '/auth/expert/signup',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

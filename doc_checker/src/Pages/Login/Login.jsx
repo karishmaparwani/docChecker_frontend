@@ -3,14 +3,15 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import image from '../../images/landing_page_img.png'
 import Logo from '../../images/logo.png'
-import '../SignUpAsPage.css'
+import '../SignUpAs/SignUpAsPage.css'
 import { Stack, Button, Container } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui'
 import useAxios from '../../hooks/UseAxios.hook'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slicer';
 import BasicModal from '../../components/Modal';
 import { useNavigate } from 'react-router-dom';
+import { ROLES } from '../../Constants'
 
 
 const Login = () => {
@@ -27,7 +28,6 @@ const Login = () => {
     });
 
     const dispatch = useDispatch()
-    const user = useSelector(state => state.user)
 
     const openModal = () => {
         setShowModal(true)
@@ -46,13 +46,13 @@ const Login = () => {
         if (data && Object.keys(data).length) {
             // sessionStorage.setItem('userInfo', JSON.stringify(data))
             dispatch(setUser(data))
-            if(data.role === 'customer') {
+            if(data.role === ROLES.CUSTOMER) {
                 navigate('/customer-home')
             }
-            if(data.role === 'moderator') {
+            if(data.role === ROLES.EXPERT) {
                 navigate('/expert-home')
             }
-            // if(data.role === 'admin') {
+            // if(data.role === ROLES.ADMIN) {
             //     navigate()
             // }
         }
