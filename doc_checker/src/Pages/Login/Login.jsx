@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid';
 import image from '../../images/landing_page_img.png'
 import Logo from '../../images/logo.png'
 import '../SignUpAs/SignUpAsPage.css'
-import { Stack, Button, Container } from '@mui/material';
+import { Stack, Button, Container, Typography } from '@mui/material';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui'
 import useAxios from '../../hooks/UseAxios.hook'
 import { useDispatch } from 'react-redux';
@@ -12,6 +12,7 @@ import { setUser } from '../../redux/slicer';
 import BasicModal from '../../components/Modal';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../../Constants'
+import Alert from '@mui/material/Alert';
 
 
 const Login = () => {
@@ -46,40 +47,18 @@ const Login = () => {
         if (data && Object.keys(data).length) {
             // sessionStorage.setItem('userInfo', JSON.stringify(data))
             dispatch(setUser(data))
-            if(data.role === ROLES.CUSTOMER) {
+            if (data.role === ROLES.CUSTOMER) {
                 navigate('/customer-home')
             }
-            if(data.role === ROLES.EXPERT) {
+            if (data.role === ROLES.EXPERT) {
                 navigate('/expert-home')
             }
             // if(data.role === ROLES.ADMIN) {
             //     navigate()
             // }
         }
-            
+
     }, [data])
-
-    useEffect(() => {
-        if (error && Object.keys(error).length) {
-            if(error?.response?.data?.message === "UNAUTHORIZED") {
-                setModalTitle("Incorrect Password. Please try again.")
-            } else {
-                setModalTitle(error?.response?.data?.message)
-            }
-
-            setModalActions(
-                <Stack direction="row" sx={{margin: 'auto'}}>
-                    <Button
-                        variant="contained"
-                        onClick={closeModal}
-                        >
-                            Close
-                    </Button>
-                </Stack>
-            )
-            setShowModal(true)
-        }
-    },[error])
 
     return (
         <div>
@@ -97,10 +76,16 @@ const Login = () => {
                                 <img src={Logo} alt='DocChecker_Logo' />
                                 <h1>DocChecker</h1>
                                 <p>Login</p>
+                                {error && <Alert severity="error">
+                                    {
+                                        error?.response?.data === "UNAUTHORIZED" ?
+                                            "Incorrect Password. Please try again." :
+                                            error?.response?.data
+                                    }
+                                </Alert>}
                             </Stack>
                             <Stack direction="column" spacing={1} justifyContent="center" alignItems="center">
                                 <Container maxWidth="sm">
-
                                     <FormContainer
                                         defaultValues={{ username: userName, password: password }}
                                         onSuccess={handlePostData}
@@ -113,21 +98,31 @@ const Login = () => {
                                         </Stack>
                                     </FormContainer>
                                 </Container>
+                                <Typography>Not a member?
+                                    <Button
+                                        variant="text"
+                                        onClick={() => navigate('/signup-as')}
+                                    >
+                                        Sign up
+                                    </Button>
+
+                                </Typography>
                             </Stack>
 
 
                         </Stack>
+
                     </Grid>
 
                 </Grid>
             </Box>
-            {showModal && 
-                    <BasicModal openModal={openModal}
+            {showModal &&
+                <BasicModal openModal={openModal}
                     closeModal={closeModal}
                     showModal={showModal}
                     modalTitle={modalTitle}
                     modalActions={modalActions} />
-                }
+            }
 
         </div>
     );
