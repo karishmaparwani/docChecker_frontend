@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Stack, Button, Stepper, Step, StepLabel, Typography, Box } from '@mui/material';
+import { Stack, Button, Stepper, Step, StepLabel, Typography, Box, MenuItem, Select, InputLabel, FormControl, Chip, CircularProgress } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { useNavigate } from 'react-router-dom'
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui'
-import BasicModal from '../Modal';
+
+import useAxios from '../../hooks/UseAxios.hook'
+import Alert from '@mui/material/Alert';
 
 
-function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setProfileData }) {
+
+function SignUpStepper({ userData, setUserData, signUp,
+    profile, setProfileData, selectedDomains,
+    selectedIndustries, setSelectedDomains,
+    setSelectedIndustries }) {
     const fileInputRef = React.useRef(null);
     const [activeStep, setActiveStep] = useState(0);
     const [passwordsMatch, setPasswordsMatch] = useState(false);
-    const [open, setOpen] = React.useState(false);
+    const [docName, setDocName] = React.useState("")
     const steps = ['Login info', 'Personel Info'];
-    const navigate = useNavigate();
+
+    const { data, error, loading, setBody, setHeaders } = useAxios({
+        url: '/file/upload',
+        method: 'POST',
+        autoFetch: false
+    });
+
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
@@ -21,28 +32,30 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    // const handleOpen = () => setOpen(true);
-    const handleClose = () => {
-        setOpen(false);
-        // Reset the stepper if desired
-        setActiveStep(0);
-    };
 
     const isPasswordMatch = (val) => {
         return userData.password === val;
     }
 
     useEffect(() => {
-        if (showModal === true) {
-            setOpen(true);
-        }
+        setProfileData((prevUserData) => ({
+            ...prevUserData,
+            ...{ resume: data?.url },
+        }))
+    }, [data])
 
-    }, [showModal])
+    const handleDomainChange = (event) => {
+        setSelectedDomains(event.target.value);
+        handleProfileChange(event);
+    };
+
+    const handleIndustryChange = (event) => {
+        setSelectedIndustries(event.target.value);
+        handleProfileChange(event);
+    };
 
     const handleChange = (e) => {
         let { name, value } = e.target;
-
-
 
         if (name === "confirmPassword") {
             setPasswordsMatch(isPasswordMatch(value))
@@ -58,6 +71,17 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
                 ...{ [name]: value },
             }));
         }
+
+
+    }
+
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0]
+        setDocName(file.name)
+        const form = new FormData();
+        form.append('file', file)
+        setHeaders({ 'Content-Type': 'multipart/form-data' })
+        setBody(form)
     }
 
     const handleProfileChange = (e) => {
@@ -67,6 +91,24 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
             ...prevUserData,
             ...{ [name]: value },
         }))
+    }
+
+    const validateForm = () => {
+        if (profile.yearsOfExperience && profile.domainOfExpertise
+            && profile.industry && profile.resume) {
+            return false
+        }
+        else return true
+    };
+
+    const displayAlert = () => {
+        if (error) {
+            return
+        } else if (data && docName) {
+            return (<Alert severity="success">{docName}</Alert>)
+        } else {
+            return (null)
+        }
     }
 
     return (
@@ -87,7 +129,6 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
             {activeStep === steps.length ? (
                 <React.Fragment>
                     <div>
-                        {/* <Button onClick={handleOpen}>Open modal</Button> */}
                         <p>Finish</p>
                     </div>
                 </React.Fragment>
@@ -124,8 +165,58 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
                                 </div>
                                 <TextFieldElement fullWidth label={"Linked In Url"} id={"fullWidth"} type={'text'} name={"linkedInUrl"} onChange={handleProfileChange} placeholder='https://linkedin.com/....' />
                                 <TextFieldElement fullWidth label={"Years of Experience"} id={"fullWidth"} type={'number'} name={"yearsOfExperience"} onChange={handleProfileChange} required />
-                                <TextFieldElement fullWidth label={"Domain"} id={"fullWidth"} type={'text'} name={"domainOfExpertise"} onChange={handleProfileChange} required />
-                                <TextFieldElement fullWidth label={"Industry"} id={"fullWidth"} type={'text'} name={"industry"} onChange={handleProfileChange} required />
+                                <FormControl required fullWidth>
+                                    <InputLabel id="domain-label">Domain</InputLabel>
+                                    <Select
+                                        labelId="domain-label"
+                                        id="domainOfExpertise"
+                                        name="domainOfExpertise"
+                                        label="Domain"
+                                        multiple
+                                        value={selectedDomains}
+                                        onChange={handleDomainChange}
+                                        renderValue={(selected) => (
+                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                {selected.map((value) => (
+                                                    <Chip key={value} label={value} />
+                                                ))}
+                                            </Box>
+                                        )}
+                                        required
+                                    >
+                                        {['Product Requirement Document', 'Resume', 'LOR', 'Essay'].map((domain) => (
+                                            <MenuItem key={domain} value={domain}>
+                                                {domain}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl required fullWidth>
+                                    <InputLabel id="industry-label">Industry</InputLabel>
+                                    <Select
+                                        labelId="industry-label"
+                                        id="industry"
+                                        name="industry"
+                                        label="Industry"
+                                        multiple
+                                        value={selectedIndustries}
+                                        onChange={handleIndustryChange}
+                                        renderValue={(selected) => (
+                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                {selected.map((value) => (
+                                                    <Chip key={value} label={value} />
+                                                ))}
+                                            </Box>
+                                        )}
+                                    >
+                                        {['Software', 'Hardware', 'Pharmaceutical', 'Banking', 'Consulting'].map((industry) => (
+                                            <MenuItem key={industry} value={industry}>
+                                                {industry}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+
                                 <Stack direction="row" spacing={5} alignItems="center" justifyContent="flex-start" style={{ 'width': '100%' }}>
                                     <label id="profile-summary">Resume</label>
                                     <Button
@@ -136,7 +227,7 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
                                         startIcon={<CloudUploadIcon />}
                                         onClick={() => fileInputRef.current.click()}
                                     >
-                                        Upload file
+                                        {loading ? <CircularProgress color='secondary' size={24} /> : 'Upload file'}
 
                                     </Button>
                                     <input
@@ -144,12 +235,20 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
                                         name="resume"
-                                    // onChange={handleChange}
+                                        onChange={handleFileUpload}
                                     />
-                                    <Typography >{userData?.resume}</Typography>
-                                </Stack>
 
-                                <Button variant="contained" fullWidth={true} type={'submit'}>Sign Up</Button>
+                                    {displayAlert()}
+
+                                </Stack>
+                                <Button
+                                    variant="contained"
+                                    fullWidth={true}
+                                    type={'submit'}
+                                    disabled={validateForm()}
+                                >
+                                    Sign Up
+                                </Button>
                             </Stack>
                         </FormContainer>}
 
@@ -164,31 +263,11 @@ function SignUpStepper({ userData, setUserData, signUp, showModal, profile, setP
                         </Button>}
 
                         <Box sx={{ flex: '1 1 auto' }} />
-
-                        {/* {activeStep === 0 && <Button onClick={handleNext} variant='contained' fullWidth>Next </Button>} */}
-
                     </Box>
                 </React.Fragment>
             )}
 
-            {showModal &&
-                <BasicModal
-                    closeModal={handleClose}
-                    showModal={showModal}
 
-                    modalTitle={"Thank you for Signing up. Our team will get back to you shortly."}
-                    modalActions={(<>
-                        <Stack direction="row" sx={{ margin: 'auto' }}>
-                            <Button
-                                variant="contained"
-                                onClick={() => navigate('/login')}
-                            >
-                                Done
-                            </Button>
-                        </Stack>
-                    </>)}
-                />
-            }
         </div>
     )
 };
