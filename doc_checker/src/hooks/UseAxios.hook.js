@@ -50,6 +50,7 @@ const useAxios = ({
 
 
     return {
+        url,
         data,
         loading,
         error,

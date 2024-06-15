@@ -11,18 +11,18 @@ function ChooseDocument({ docType, setDocType, documentCategories }) {
         for(let i=0; i<documentCategories.length; i+=2) {
             buttonChunk.push(
                 <Stack key={i} mt={5} spacing={3} direction="row">
-                    <Button sx={{ width: '15vw', backgroundColor: docType === DOCUMENT_TYPES[documentCategories[i]] ? '#6FA5ED' : '#E4E6EA', color: docType === DOCUMENT_TYPES[documentCategories[i]] ? '#FFFFFF' : '#030303' }}
+                    <Button sx={{ width: '15vw', backgroundColor: docType === DOCUMENT_TYPES[documentCategories[i]].shortHand ? '#6FA5ED' : '#E4E6EA', color: docType === DOCUMENT_TYPES[documentCategories[i]] ? '#FFFFFF' : '#030303' }}
                             variant="contained"
-                            onClick={() => setDocType(DOCUMENT_TYPES[documentCategories[i]])}
+                            onClick={() => setDocType(DOCUMENT_TYPES[documentCategories[i]].shortHand)}
                         >
-                            {DOCUMENT_TYPES[documentCategories[i]]}
+                            {DOCUMENT_TYPES[documentCategories[i]].name}
                     </Button>
                     { i+1 < documentCategories.length &&
-                        <Button sx={{ width: '15vw', backgroundColor: docType === DOCUMENT_TYPES[documentCategories[i+1]] ? '#6FA5ED' : '#E4E6EA', color: docType === DOCUMENT_TYPES[documentCategories[i+1]] ? '#FFFFFF' : '#030303' }}
+                        <Button sx={{ width: '15vw', backgroundColor: docType === DOCUMENT_TYPES[documentCategories[i+1]].shortHand ? '#6FA5ED' : '#E4E6EA', color: docType === DOCUMENT_TYPES[documentCategories[i+1]] ? '#FFFFFF' : '#030303' }}
                             variant="contained"
-                            onClick={() => setDocType(DOCUMENT_TYPES[documentCategories[i+1]])}
+                            onClick={() => setDocType(DOCUMENT_TYPES[documentCategories[i+1]].shortHand)}
                         >
-                            {DOCUMENT_TYPES[documentCategories[i+1]]}
+                            {DOCUMENT_TYPES[documentCategories[i+1]].name}
                         </Button>
                     }
                     

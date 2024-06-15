@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import MultiStepForm from '../components/MultiStepForm';
@@ -11,6 +11,8 @@ import UploadPDF from '../components/UploadPDF';
 import SubmitPDF from '../components/SubmitPDF'
 import { useNavigate } from "react-router-dom";
 import { DOCUMENT_TYPES } from '../Constants'
+import useAxios from '../hooks/UseAxios.hook'
+import { useSelector } from 'react-redux';
 
 const ResumeQuestionaire = {
     q1: 'Number of years of relevant experience',
@@ -52,42 +54,65 @@ function UploadDocument() {
     const [extraInfo, setExtraInfo] = React.useState('')
     const [document, setDocument] = React.useState()
     const navigate = useNavigate();
-
+    const { data, error, loading, setUrl, setBody, setMethod, setHeaders, url } = useAxios({
+        //  url: '/review',
+        //   method: 'POST',
+        autoFetch: false
+    });
+    const user = useSelector(state => state.user.user)
     const sendQuestionaire = () => {
-        if(docType === DOCUMENT_TYPES.COL_APP) {
+        if (docType === DOCUMENT_TYPES.COL_APP.shortHand) {
             return CollegeEssayQuestionaire
         }
-        if(docType === DOCUMENT_TYPES.LOR) {
+        if (docType === DOCUMENT_TYPES.LOR.shortHand) {
             return LORQuestionaire
         }
-        if(docType === DOCUMENT_TYPES.RESUME) {
+        if (docType === DOCUMENT_TYPES.RESUME.shortHand) {
             return ResumeQuestionaire
         }
-        if(docType === DOCUMENT_TYPES.PRD) {
+        if (docType === DOCUMENT_TYPES.PRD.shortHand) {
             return PRDQuestionaire
         }
 
     }
+
+    useEffect(() => {
+        if (data && url === '/review') {
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+    }, [data])
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
     const handleNext = () => {
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-
+        if (activeStep === numberOfSteps - 2) {
+            setUrl('/review')
+            setMethod('POST')
+            setBody({
+                "attachmentName": docName,
+                "attachment": document?.url,
+                "relevantExp": yearsOfExperience,
+                "reasonForReview": extraInfo,
+                "description": desc,
+                "docType": docType
+            })
+            setHeaders({ 'Content-Type': 'application/json', authorization: "Bearer " + user.accessToken })
+        } else {
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
     };
 
     const disableNext = () => {
-        if(activeStep === 0 && !docType) {
+        if (activeStep === 0 && !docType) {
             return true
         }
-        if(activeStep === 1 && (!yearsOfExperience || !docName || !desc || !extraInfo)) {
+        if (activeStep === 1 && (!yearsOfExperience || !docName || !desc || !extraInfo)) {
             return true
         }
 
-        if(activeStep === 2 && !document) {
+        if (activeStep === 2 && !document) {
             return true
         }
 
@@ -100,16 +125,18 @@ function UploadDocument() {
                 Upload Document
             </Typography>
             <Box m={5} >
-                <Box component="section" 
-                    sx={{ border: '1px solid #E4E6EA', height: '100%' }} 
+                <Box component="section"
+                    sx={{ border: '1px solid #E4E6EA', height: '100%' }}
                     className="add-padding"
                     pt={5} pb={5}
-                    >
+                >
+
                     <Box p={3} sx={{ border: '1px solid #909090', height: '100%', minHeight: '40vh', minWidth: '50%' }} >
+                        
                         <MultiStepForm numberOfSteps={numberOfSteps} activeStep={activeStep} />
-                        {activeStep === 0 && <ChooseDocument setDocType={setDocType} docType={docType} documentCategories={Object.keys(DOCUMENT_TYPES)}/>}
+                        {activeStep === 0 && <ChooseDocument setDocType={setDocType} docType={docType} documentCategories={Object.keys(DOCUMENT_TYPES)} />}
                         {activeStep === 1 &&
-                            <GatherDocDetails 
+                            <GatherDocDetails
                                 yearsOfExperience={yearsOfExperience} setYearsOfExperience={setYearsOfExperience}
                                 docName={docName} setDocName={setDocName}
                                 desc={desc} setDesc={setDesc}
@@ -117,34 +144,45 @@ function UploadDocument() {
                                 questionsObj={sendQuestionaire()}
                             />
                         }
-                        {activeStep === 2 && <UploadPDF setDocument={setDocument} document={document}/>}
+                        {activeStep === 2 && <UploadPDF
+                            setDocument={setDocument}
+                            document={document}
+                            setUrl={setUrl}
+                            setMethod={setMethod}
+                            setBody={setBody}
+                            setHeaders={setHeaders}
+                            user={user}
+                            data={data}
+                            loading={loading}
+                            error={error} url={url}
+                        />}
                         {activeStep === 3 && <SubmitPDF />}
                         <Stack spacing={10} direction="row" mt={5} sx={{ justifyContent: 'center' }}>
                             {activeStep !== numberOfSteps - 1 ?
-                            <>
-                                <Button sx={{ width: '15vw' }}
-                                    variant="contained"
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                >
-                                    Back
-                                </Button>
+                                <>
+                                    <Button sx={{ width: '15vw' }}
+                                        variant="contained"
+                                        disabled={activeStep === 0}
+                                        onClick={handleBack}
+                                    >
+                                        Back
+                                    </Button>
+                                    <Button sx={{ width: '15vw' }}
+                                        variant="contained"
+                                        disabled={isNextDisabled}
+                                        onClick={handleNext}
+                                    >
+                                        {activeStep === numberOfSteps - 2 ? 'Submit' : 'Next'}
+                                    </Button>
+                                </> :
                                 <Button sx={{ width: '15vw' }}
                                     variant="contained"
                                     disabled={isNextDisabled}
-                                    onClick={handleNext}
+                                    onClick={() => navigate("/customer-home")}
                                 >
-                                    {activeStep === numberOfSteps - 2 ? 'Submit' : 'Next'}
+                                    Done
                                 </Button>
-                            </> :
-                            <Button sx={{ width: '15vw' }}
-                                variant="contained"
-                                disabled={isNextDisabled}
-                                onClick={() => navigate("/customer-home")}
-                            >
-                                Done
-                            </Button>
-                        } 
+                            }
                         </Stack>
 
 
