@@ -15,6 +15,7 @@ function DocumentReview() {
     const { docId } = location.state || {};
     const [pdf, setPdf] = useState("")
     const [isReviewCompleted, setIsReviewCompleted] = useState(false)
+    const [isSubmitReviewClicked, setIsSubmitReviewClicked] = useState(false) 
     const { data, error, loading } = useAxios({
         url: `/review/${docId}`,
         autoFetch: true
@@ -23,14 +24,12 @@ function DocumentReview() {
 
     useEffect(() => {
         setPdf(data?.attachment)
-        if(data?.comment) {
-            localStorage.setItem([docId], JSON.stringify(data?.comment) );
-        }
     }, [data])
 
     const completeReviewProcess = () => {
         setIsReviewCompleted(true)
     }
+
 
     return (
         <>
@@ -39,7 +38,13 @@ function DocumentReview() {
                     Document Review
                 </Typography>
                 {user.role === ROLES.CUSTOMER && <Button variant="contained" >Contact Expert</Button>}
-                {user.role === ROLES.EXPERT && <Button variant="contained" onClick={completeReviewProcess}>Completed</Button>} 
+                {user.role === ROLES.EXPERT && 
+                <Button 
+                    variant="contained" 
+                    onClick={completeReviewProcess}
+                    disabled={!isSubmitReviewClicked}
+                    >Completed</Button>
+                } 
                 
             </Box>
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.15.349/build/pdf.worker.min.js">
@@ -55,7 +60,9 @@ function DocumentReview() {
                         loading ? <CircularProgress color='secondary' size={200}/> :
                             <ErrorBoundary>
                                 {pdf && <HighlightDocument fileUrl={pdf} highlightData={data} docId={docId}
-                                isReviewCompleted={isReviewCompleted} />}
+                                isReviewCompleted={isReviewCompleted} setIsSubmitReviewClicked={setIsSubmitReviewClicked} 
+                                isSubmitReviewClicked={isSubmitReviewClicked}
+                                />}
                             </ErrorBoundary>
                     }
 

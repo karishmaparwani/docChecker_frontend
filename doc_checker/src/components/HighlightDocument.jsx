@@ -20,7 +20,7 @@ import useAxios from '../hooks/UseAxios.hook'
 import Alert from '@mui/material/Alert';
 import { CircularProgress } from '@mui/material';
 
-function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted }) {
+function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, setIsSubmitReviewClicked, isSubmitReviewClicked }) {
     const [message, setMessage] = React.useState('');
     const [notes, setNotes] = React.useState(JSON.parse(localStorage.getItem([docId])) ?? []);
     let noteId = notes[notes.length - 1]?.id || 0;
@@ -46,6 +46,14 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted })
     }
 
     useEffect(() => {
+        if(notes.length > 0 && highlightData?.comments?.length === notes.length) {
+            setIsSubmitReviewClicked(true)
+        } else {
+            setIsSubmitReviewClicked(false)
+        }
+    },[notes, highlightData])
+
+    useEffect(() => {
         if (url?.includes('comments')) {
             if (loading) {
                 setModalActions()
@@ -62,6 +70,9 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted })
                     </Button>
                 </Stack>)
             } else if (data) {
+                if(!isSubmitReviewClicked) {
+                    setIsSubmitReviewClicked(true)
+                }
                 setModalTitle(`Your review for ${highlightData?.attachmentName} has been submitted successfully!!! If you want to 
                     complete the review process, click on "COMPLETED" on top right corner of the screen.`)
                 setModalActions(
@@ -128,14 +139,13 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted })
     const renderHighlightContent = (props) => {
         const styling = {
             position: 'absolute',
-            left: `${props.selectionRegion.left}%`,
-            // left: '50%',
+           // left: `${props.selectionRegion.left}%`,
+             left: '50%',
             top: `${props.selectionRegion.top + props.selectionRegion.height}%`,
             zIndex: 1,
             width: '25vw'
         }
         const addNote = () => {
-            console.log(props)
             if (message !== '') {
                 const note = {
                     id: ++noteId,
@@ -145,6 +155,7 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted })
                 };
                 setNotes(notes.concat([note]));
                 localStorage.setItem([docId], JSON.stringify(notes))
+               //setIsSubmitReviewClicked(false)
                 props.cancel();
             }
         };
@@ -322,7 +333,7 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted })
                             variant="contained"
                             sx={{ height: '36px', width: '40vw', left: '30vw' }}
                             onClick={onSubmitReview}
-                            disabled={isReviewCompleted}
+                            disabled={isReviewCompleted || notes.length === 0}
                         >
                             Submit Review
                         </Button>
