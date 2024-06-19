@@ -57,7 +57,7 @@ function ChangeProfileSetting() {
                 <Box display="inline-block">
                     <Button variant="contained"
                         onClick={handleProfileSettingsUpdate}
-                        disabled={!firstName || !lastName || !userName || !email}>
+                        disabled={!firstName || !lastName || !userName || !email || emailError}>
                         Change Profile Settings
                     </Button>
                 </Box>
