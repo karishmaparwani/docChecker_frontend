@@ -12,6 +12,7 @@ function GatherDocDetails(props) {
                 </Typography>
                 <TextField fullWidth id="outlined-controlled"
                     value={props.yearsOfExperience}
+                    type='number'
                     onChange={(e) => props.setYearsOfExperience(e.target.value)}
                     sx={{
                         '& .MuiOutlinedInput-root': {

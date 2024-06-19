@@ -171,7 +171,7 @@ function LandingPage() {
                     variant="contained" 
                     aria-label="Sign Up" 
                     style={{ marginRight: 8, background: '#6FA5ED' , color:'#fff'}}
-                    onClick={() => navigate("/signup")}
+                    onClick={() => navigate("/signup-as")}
                     >
                     Sign Up
                   </Button>

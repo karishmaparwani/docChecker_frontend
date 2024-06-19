@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography';
 import BasicTable from '../components/TableComponent';
 import Box from '@mui/material/Box';
@@ -6,6 +6,9 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import Alert from '@mui/material/Alert';
+import BasicModal from '../components/Modal';
+import { CircularProgress } from '@mui/material';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'; //Resume
@@ -15,92 +18,138 @@ import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutl
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import { useNavigate } from "react-router-dom";
+import useAxios from '../hooks/UseAxios.hook'
+import { DOCUMENT_TYPES, REVIEW_STATUS } from '../Constants'
 
-function createData(id, name, type, status) {
-    return { id, name, type, status};
-  }
-  
-  const rowsFromBackend = [
-    createData(1001, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1002, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1003, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1004, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1005, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-    createData(1006, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1007, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1008, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1009, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1010, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-    createData(1011, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1012, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1013, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1014, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1015, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-    createData(1016, 'rangoli_jain_resume.pdf','Resume', 'Reviewed'),
-    createData(1017, 'rangoli_jain_LOR.pdf','Letter Of Recommendation', 'Pending'),
-    createData(1018, 'Essay_New_York_University.pdf','College Application Essay', 'Reviewed'),
-    createData(1019, 'Resume_reviewer_prd.pdf','Product Requirement Document', 'Pending'),
-    createData(1020, 'Karishma_resume.pdf','Resume', 'Reviewed'),
-  ];
 
-  const columns = ['Id','Document Name',`Type Of Document`, 'Status', '']
+const columns = ['Id','Document Name',`Type Of Document`, 'Status', '']
 
 function HomePage() {
-    const [rows, setRows] = React.useState([...rowsFromBackend])
+    const [rows, setRows] = React.useState([])
+    const [searchQuery, setSearchQuery] = React.useState('');
     const navigate = useNavigate();
+    const [showModal, setShowModal] = React.useState(false)
+    const [modalTitle, setModalTitle] = React.useState('')
+    const [allDocsTab, setAllDocsTab] = React.useState(true)
+    const [completedTab, setCompleteTab] = React.useState(false)
+    const [pendingTab, setPendingTab] = React.useState(false)
+    const {data, error, loading,} = useAxios({
+      url: '/user/reviews',
+      autoFetch: true
+    });
+
+    const openModal = () => {
+      setShowModal(true)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+    }
+    
+    
+
+    useEffect(() => {
+      setRows(data)
+    },[data])
+
+    const showDocumentDescription = (row) => {
+      setModalTitle(row.description)
+      openModal()
+    }
+
+    const loadPdfwithReview = (docId) => {
+      navigate('/document-review', { state: { docId } });
+    }
+
+    const handleSearchChange = (event) => {
+      setSearchQuery(event.target.value);
+      filteredRows()
+    };
+
+    const filteredRows = () => {
+      const filteredData = data?.filter((row) => row.attachment_name.toLowerCase().includes(searchQuery.toLowerCase()))
+      setRows(filteredData)
+    }
 
     const filterCompletedDocs = () => {
-        let filteredData = rowsFromBackend.filter(row => row.status === 'Reviewed')
+        let filteredData = data.filter(row => row.reviewStatus === REVIEW_STATUS.COMPLETED)
+        setAllDocsTab(false)
+        setCompleteTab(true)
+        setPendingTab(false)
         setRows([...filteredData])
     }
 
     const filterPendingDocs = () => {
-        let filteredData = rowsFromBackend.filter(row => row.status === 'Pending')
+        let filteredData = data.filter(row => row.reviewStatus === REVIEW_STATUS.INPROGRESS)
+        setAllDocsTab(false)
+        setCompleteTab(false)
+        setPendingTab(true)
         setRows([...filteredData])
     }
 
     const showAllDocs = () => {
-        setRows([...rowsFromBackend])
+      setAllDocsTab(true)
+      setCompleteTab(false)
+      setPendingTab(false)
+        setRows([...data])
     }
 
     const populateRows = (page, rowsPerPage) => {
         return (
-            rows && rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+          rows?.length > 0 ? rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow
-                  key={row.id}
+                  key={row.docId}
                   sx={{  height: 80 }} 
                 >
                   <TableCell >
-                    {row.id}
+                    {row.docId}
                   </TableCell>
                   <TableCell scope='row'>
                     <Grid container spacing={2}>
                       <Grid xs={2} pt={2}>
-                        {row.type === 'Resume' && <DescriptionOutlinedIcon fontSize='large'/>}
-                        {row.type === 'College Application Essay' && <AssignmentOutlinedIcon fontSize='large' />}
-                        {row.type === 'Letter Of Recommendation' && <DraftsOutlinedIcon fontSize='large' />}
-                        {row.type === 'Product Requirement Document' && <DocumentScannerOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.RESUME.shortHand && <DescriptionOutlinedIcon fontSize='large'/>}
+                        {row.docType === DOCUMENT_TYPES.COL_APP.shortHand && <AssignmentOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.LOR.shortHand && <DraftsOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.PRD.shortHand && <DocumentScannerOutlinedIcon fontSize='large' />}
                       </Grid>
                       <Grid xs={10}>
-                        <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>{row.name}</Grid>
-                        <Grid xs={12}>{row.status === 'Reviewed' ? 'Reviewed by expert' : 'Pending for Review'}</Grid>
+                        <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>
+                          <Button sx={{ textTransform: 'none' }} onClick={() => showDocumentDescription(row)}>
+                            {row.attachmentName}
+                          </Button>
+                        </Grid>
+                        <Grid xs={12}>{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed by expert' : 'Pending for Review'}</Grid>
                       </Grid>
                     </Grid>  
                   
                   </TableCell>
-                  <TableCell >{row.type}</TableCell>
-                  <TableCell >{row.status}</TableCell>
+                  <TableCell >{row.docType}</TableCell>
+                  <TableCell >{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed' : 'In Progress'}</TableCell>
                   <TableCell align='right'>
-                    <Button variant="contained" sx={{width: '12vw'}}>{row.status === 'Reviewed' ? 'View Feedback' : 'View Document'}</Button>
+                    <Button 
+                    variant="contained" 
+                    sx={{width: '12vw'}}
+                    onClick={() => loadPdfwithReview(row.docId)}
+                    >
+                      {row.status === REVIEW_STATUS.COMPLETED ? 'View Feedback' : 'View Document'}
+                    </Button>
                   </TableCell>
                 </TableRow>
-              ))
+              )) : 
+              <TableRow>
+                <TableCell colSpan={7}>
+                  <Alert severity="error">{error?.response?.data || "No data to display."}</Alert>
+                </TableCell>
+                
+                  
+              </TableRow>
         )
     }
 
   return (
     <>
-        <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
+      <Box>
+      <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
             Home
         </Typography>
         <Box m={5} > 
@@ -109,18 +158,21 @@ function HomePage() {
                     <Button
                         variant="contained"
                         onClick={showAllDocs}
+                        sx={{ bgcolor: !allDocsTab ? 'grey.500' : 'primary.main' }}
                         >
                             All Docs
                     </Button>
                     <Button
                         variant="contained"
                         onClick={filterCompletedDocs}
+                        sx={{ bgcolor: !completedTab ? 'grey.500' : 'primary.main' }}
                         >
                             Completed Docs
                     </Button>
                     <Button
                         variant="contained"
                         onClick={filterPendingDocs}
+                        sx={{ bgcolor: !pendingTab ? 'grey.500' : 'primary.main' }}
                         >
                             Pending for Review
                     </Button>
@@ -133,6 +185,8 @@ function HomePage() {
                         id="outlined-start-adornment"
                         size='small'
                         sx={{ width: '25ch' }}
+                        value={searchQuery}
+                        onChange={handleSearchChange}
                         InputProps={{
                             startAdornment: <InputAdornment position="start">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#1976d2"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -149,8 +203,30 @@ function HomePage() {
                     </Button>
                 </Stack>
             </Box>
-            <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
+            {
+              loading ? <CircularProgress color='secondary' size={100} /> : 
+              <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
+            }
         </Box>
+      </Box>
+      {showModal && 
+          <BasicModal openModal={openModal}
+          closeModal={closeModal}
+          showModal={showModal}
+        
+          modalTitle={modalTitle}
+          modalActions={(<>
+            <Stack direction="row" sx={{margin: 'auto'}}>
+                <Button
+                    variant="contained"
+                    onClick={closeModal}
+                    >
+                        Done
+                </Button>
+            </Stack>
+            </>)} 
+          />
+      } 
         
     </>
   )

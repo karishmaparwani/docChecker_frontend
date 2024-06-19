@@ -31,7 +31,7 @@ export default function BasicTable({rows, columns, populateRows}) {
         <Table sx={{ minWidth: 650, height: 80 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              {columns.map((col, idx) => <TableCell key={idx} sx={{fontWeight: 'bold'}}>{col}</TableCell>)}
+              {columns?.map((col, idx) => <TableCell key={idx} sx={{fontWeight: 'bold'}}>{col}</TableCell>)}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -43,7 +43,7 @@ export default function BasicTable({rows, columns, populateRows}) {
         rowsPerPageOptions={[5,10]}
         page={page}
         rowsPerPage={rowsPerPage}
-        count={rows.length}
+        count={rows?.length}
         component={'div'}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPage}

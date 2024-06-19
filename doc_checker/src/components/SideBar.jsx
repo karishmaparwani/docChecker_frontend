@@ -6,14 +6,20 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
-import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import Hidden from '@material-ui/core/Hidden';
 import logo from '../images/logo.png';  
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
+import BasicModal from './Modal';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import { setUser } from '../redux/slicer';
+import { ROLES } from '../Constants'
+import { red } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -39,17 +45,19 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: theme.spacing(2),
     fontWeight: 'bold',
-    fontSize: 48,
+    fontSize: 10,
     [theme.breakpoints.down('sm')]: {
-      fontSize: 24,
+      fontSize: 10,
     },
   },
   logo: {
     marginRight: theme.spacing(1),
+    width: '3rem',
+    height: '3rem'
   },
   avatar: {
     marginRight: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: red[500] 
   },
   userInfo: {
     display: 'flex',
@@ -63,12 +71,49 @@ const useStyles = makeStyles((theme) => ({
   navList: {
     flex: 1,
   },
+  clickable: {
+    cursor: 'pointer',
+  },
 }));
 
 const Sidebar = () => {
   const classes = useStyles();
+  const user = useSelector(state => state.user.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [showModal, setShowModal] = React.useState(false)
+
+  const openModal = () => {
+    setShowModal(true)
+}
+
+  const closeModal = () => {
+      setShowModal(false)
+  }
+
+  const handleHomeClick = () => {
+    if(user.role === ROLES.CUSTOMER) {
+      navigate('/customer-home')
+    }
+    if(user.role === ROLES.EXPERT) {
+      navigate('/expert-home')
+    }
+    if(user.role === ROLES.ADMIN) {
+      navigate('/admin-home')
+    }
+  }
+
+
+
+  const handleLogout = () => {
+    console.log("Handle logout")
+    navigate('/logout')
+    sessionStorage.clear()
+    dispatch(setUser({}))
+  }
 
   return (
+    <>
     <Drawer
       className={classes.drawer}
       variant="permanent"
@@ -77,44 +122,73 @@ const Sidebar = () => {
       }}
     >
       <div>
-        <div className={classes.toolbar} />
         <div className={classes.logoContainer}>
           <img src={logo} alt="Logo" className={classes.logo} />
-          <Typography variant="h5" style={{ fontSize: '48px', fontWeight: 'bold' }}>DocChecker</Typography>
+          <Typography variant="h5" style={{ fontSize: '24px', fontWeight: 'bold' }}>DocChecker</Typography>
         </div>
         <List className={classes.navList}>
-          <ListItem button>
-            <ListItemIcon><HomeIcon /></ListItemIcon>
-            <ListItemText primary="Home" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><DescriptionIcon /></ListItemIcon>
-            <ListItemText primary="Upload Document" />
-          </ListItem>
+          <div className={classes.clickable} onClick={handleHomeClick}>
+            <ListItem >
+              <ListItemIcon><HomeIcon /></ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItem>
+          </div>
+          
         </List>
       </div>
       <div>
         <Divider />
         <div className={classes.userInfo}>
-          <Avatar className={classes.avatar}>R</Avatar>
+          <Avatar className={classes.avatar} >{user?.firstname?.charAt(0).toUpperCase()}</Avatar>
           <div className={classes.userNameEmail}>
-            <Typography variant="body1">Rangoli</Typography>
-            <Typography variant="body2">rkapil@gmail.com</Typography>
+            <Typography variant="body1">{user?.username}</Typography>
+            <Typography variant="body2">{user?.emailId}</Typography>
           </div>
         </div>
         <Divider />
         <List>
-          <ListItem button>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
-            <ListItemText primary="Settings" />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon><ExitToAppIcon /></ListItemIcon>
-            <ListItemText primary="Log out" />
-          </ListItem>
+          <div className={classes.clickable} onClick={() => navigate('/settings')}>
+            <ListItem>
+              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemText primary="Settings" />
+            </ListItem>
+          </div>
+          <div className={classes.clickable} onClick={openModal}>
+            <ListItem>
+              <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+              <ListItemText primary="Log out" />
+            </ListItem>
+          </div>
         </List>
       </div>
     </Drawer>
+    {showModal && 
+                    <BasicModal openModal={openModal}
+                    closeModal={closeModal}
+                    showModal={showModal}
+                  
+                    modalTitle={"Are you sure you want to logout?"}
+                    modalActions={(<>
+                      <Stack spacing={2} direction="row" sx={{margin: 'auto'}}>
+                          <Button
+                              variant="contained"
+                              onClick={handleLogout}
+                              >
+                                  Confirm
+                          </Button>
+                          <Button
+                              variant="contained"
+                              onClick={closeModal}
+                              >
+                                  Cancel
+                          </Button>
+                      </Stack>   
+                      </>)} 
+                    />
+                }
+    </>
+    
+   
   );
 };
 

@@ -10,7 +10,7 @@ export default function ReviewBox({note}) {
   return (
             <CardContent>
                 <Typography variant="body2" color="#000000" >
-                {note.content}
+                {note.comment}
                 </Typography>
             </CardContent>
   );
