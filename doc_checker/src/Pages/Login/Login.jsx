@@ -45,7 +45,7 @@ const Login = () => {
 
     useEffect(() => {
         if (data && Object.keys(data).length) {
-            // sessionStorage.setItem('userInfo', JSON.stringify(data))
+            sessionStorage.setItem('userInfo', JSON.stringify(data))
             dispatch(setUser(data))
             if (data.role === ROLES.CUSTOMER) {
                 navigate('/customer-home')
@@ -53,9 +53,9 @@ const Login = () => {
             if (data.role === ROLES.EXPERT) {
                 navigate('/expert-home')
             }
-            // if(data.role === ROLES.ADMIN) {
-            //     navigate()
-            // }
+            if(data.role === ROLES.ADMIN) {
+                navigate('/admin-home')
+            }
         }
 
     }, [data])

@@ -16,13 +16,15 @@ const ExpertSignUp = () => {
     const [showModal, setShowModal] = useState(false)
     const [modalTitle, setModalTitle] = React.useState('')
     const [modalActions, setModalActions] = React.useState()
+    const [industries, setIndustries] = React.useState([])
+    const [domains, setDomains] = React.useState([])
     const [selectedDomains, setSelectedDomains] = useState([]);
     const [selectedIndustries, setSelectedIndustries] = useState([]);
-    const { data, setBody, loading, error } = useAxios({
-        url: '/auth/expert/signup',
-        method: 'POST',
+    const { data, setBody, loading, error, setUrl, setMethod, url } = useAxios({
+        url: '/industries',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        autoFetch: false
+        autoFetch: true
     });
     const navigate = useNavigate()
 
@@ -31,6 +33,8 @@ const ExpertSignUp = () => {
     };
 
     const handlePostData = () => {
+        setUrl('/auth/expert/signup')
+        setMethod('POST')
         setBody({
             ...userData,
             profile: {
@@ -43,7 +47,7 @@ const ExpertSignUp = () => {
     };
 
     useEffect(() => {
-        if (data && Object.keys(data).length) {
+        if (data && Object.keys(data).length && url === '/auth/expert/signup') {
             setShowModal(true)
             setModalTitle("Thank you for Signing up. Our team will get back to you shortly.")
             setModalActions((<>
@@ -58,8 +62,16 @@ const ExpertSignUp = () => {
             </>))
 
         }
-    }, [data])
+        if (data && url === '/industries') {
+            setIndustries(data)
+            setUrl('/domains')
+            setMethod('GET')
+        }
 
+        if (data && url === '/domains') {
+            setDomains(data)
+        }
+    }, [data])
 
     return (
         <div>
@@ -89,6 +101,7 @@ const ExpertSignUp = () => {
                                                 profile={profile} setProfileData={setProfileData}
                                                 selectedDomains={selectedDomains} setSelectedDomains={setSelectedDomains}
                                                 selectedIndustries={selectedIndustries} setSelectedIndustries={setSelectedIndustries}
+                                                industries={industries} domains={domains}
                                             />
                                     }
 

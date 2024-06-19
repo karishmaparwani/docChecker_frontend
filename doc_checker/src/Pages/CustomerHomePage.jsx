@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from '@mui/material/Alert';
 import BasicModal from '../components/Modal';
+import { CircularProgress } from '@mui/material';
 
 import Grid from '@mui/material/Unstable_Grid2';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'; //Resume
@@ -29,6 +30,13 @@ function HomePage() {
     const navigate = useNavigate();
     const [showModal, setShowModal] = React.useState(false)
     const [modalTitle, setModalTitle] = React.useState('')
+    const [allDocsTab, setAllDocsTab] = React.useState(true)
+    const [completedTab, setCompleteTab] = React.useState(false)
+    const [pendingTab, setPendingTab] = React.useState(false)
+    const {data, error, loading,} = useAxios({
+      url: '/user/reviews',
+      autoFetch: true
+    });
 
     const openModal = () => {
       setShowModal(true)
@@ -38,10 +46,7 @@ function HomePage() {
         setShowModal(false)
     }
     
-    const {data} = useAxios({
-      url: '/user/reviews',
-      autoFetch: true
-    });
+    
 
     useEffect(() => {
       setRows(data)
@@ -50,6 +55,10 @@ function HomePage() {
     const showDocumentDescription = (row) => {
       setModalTitle(row.description)
       openModal()
+    }
+
+    const loadPdfwithReview = (docId) => {
+      navigate('/document-review', { state: { docId } });
     }
 
     const handleSearchChange = (event) => {
@@ -64,15 +73,24 @@ function HomePage() {
 
     const filterCompletedDocs = () => {
         let filteredData = data.filter(row => row.reviewStatus === REVIEW_STATUS.COMPLETED)
+        setAllDocsTab(false)
+        setCompleteTab(true)
+        setPendingTab(false)
         setRows([...filteredData])
     }
 
     const filterPendingDocs = () => {
         let filteredData = data.filter(row => row.reviewStatus === REVIEW_STATUS.INPROGRESS)
+        setAllDocsTab(false)
+        setCompleteTab(false)
+        setPendingTab(true)
         setRows([...filteredData])
     }
 
     const showAllDocs = () => {
+      setAllDocsTab(true)
+      setCompleteTab(false)
+      setPendingTab(false)
         setRows([...data])
     }
 
@@ -89,15 +107,15 @@ function HomePage() {
                   <TableCell scope='row'>
                     <Grid container spacing={2}>
                       <Grid xs={2} pt={2}>
-                        {row.docType === DOCUMENT_TYPES.RESUME && <DescriptionOutlinedIcon fontSize='large'/>}
-                        {row.docType === DOCUMENT_TYPES.COL_APP && <AssignmentOutlinedIcon fontSize='large' />}
-                        {row.docType === DOCUMENT_TYPES.LOR && <DraftsOutlinedIcon fontSize='large' />}
-                        {row.docType === DOCUMENT_TYPES.PRD && <DocumentScannerOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.RESUME.shortHand && <DescriptionOutlinedIcon fontSize='large'/>}
+                        {row.docType === DOCUMENT_TYPES.COL_APP.shortHand && <AssignmentOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.LOR.shortHand && <DraftsOutlinedIcon fontSize='large' />}
+                        {row.docType === DOCUMENT_TYPES.PRD.shortHand && <DocumentScannerOutlinedIcon fontSize='large' />}
                       </Grid>
                       <Grid xs={10}>
                         <Grid xs={12} mb={1} sx={{fontWeight: 'bold'}}>
                           <Button sx={{ textTransform: 'none' }} onClick={() => showDocumentDescription(row)}>
-                            {row.attachment_name}
+                            {row.attachmentName}
                           </Button>
                         </Grid>
                         <Grid xs={12}>{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed by expert' : 'Pending for Review'}</Grid>
@@ -111,7 +129,7 @@ function HomePage() {
                     <Button 
                     variant="contained" 
                     sx={{width: '12vw'}}
-                    onClick={() => navigate('/document-review')}
+                    onClick={() => loadPdfwithReview(row.docId)}
                     >
                       {row.status === REVIEW_STATUS.COMPLETED ? 'View Feedback' : 'View Document'}
                     </Button>
@@ -120,8 +138,9 @@ function HomePage() {
               )) : 
               <TableRow>
                 <TableCell colSpan={7}>
-                  <Alert severity="error">No data to display.</Alert>
+                  <Alert severity="error">{error?.response?.data || "No data to display."}</Alert>
                 </TableCell>
+                
                   
               </TableRow>
         )
@@ -139,18 +158,21 @@ function HomePage() {
                     <Button
                         variant="contained"
                         onClick={showAllDocs}
+                        sx={{ bgcolor: !allDocsTab ? 'grey.500' : 'primary.main' }}
                         >
                             All Docs
                     </Button>
                     <Button
                         variant="contained"
                         onClick={filterCompletedDocs}
+                        sx={{ bgcolor: !completedTab ? 'grey.500' : 'primary.main' }}
                         >
                             Completed Docs
                     </Button>
                     <Button
                         variant="contained"
                         onClick={filterPendingDocs}
+                        sx={{ bgcolor: !pendingTab ? 'grey.500' : 'primary.main' }}
                         >
                             Pending for Review
                     </Button>
@@ -181,7 +203,10 @@ function HomePage() {
                     </Button>
                 </Stack>
             </Box>
-            <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
+            {
+              loading ? <CircularProgress color='secondary' size={100} /> : 
+              <BasicTable rows={rows} columns={columns} populateRows={populateRows}/>
+            }
         </Box>
       </Box>
       {showModal && 

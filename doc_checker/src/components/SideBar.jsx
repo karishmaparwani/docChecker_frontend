@@ -19,6 +19,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { setUser } from '../redux/slicer';
 import { ROLES } from '../Constants'
+import { red } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -56,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     marginRight: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: red[500] 
   },
   userInfo: {
     display: 'flex',
@@ -97,9 +98,9 @@ const Sidebar = () => {
     if(user.role === ROLES.EXPERT) {
       navigate('/expert-home')
     }
-    // if(user.role === ROLES.ADMIN) {
-    //   navigate('/admin-home')
-    // }
+    if(user.role === ROLES.ADMIN) {
+      navigate('/admin-home')
+    }
   }
 
 
@@ -107,6 +108,7 @@ const Sidebar = () => {
   const handleLogout = () => {
     console.log("Handle logout")
     navigate('/logout')
+    sessionStorage.clear()
     dispatch(setUser({}))
   }
 
@@ -137,7 +139,7 @@ const Sidebar = () => {
       <div>
         <Divider />
         <div className={classes.userInfo}>
-          <Avatar className={classes.avatar}>{user?.firstname?.charAt(0).toUpperCase()}</Avatar>
+          <Avatar className={classes.avatar} >{user?.firstname?.charAt(0).toUpperCase()}</Avatar>
           <div className={classes.userNameEmail}>
             <Typography variant="body1">{user?.username}</Typography>
             <Typography variant="body2">{user?.emailId}</Typography>
@@ -145,7 +147,7 @@ const Sidebar = () => {
         </div>
         <Divider />
         <List>
-          <div className={classes.clickable} >
+          <div className={classes.clickable} onClick={() => navigate('/settings')}>
             <ListItem>
               <ListItemIcon><SettingsIcon /></ListItemIcon>
               <ListItemText primary="Settings" />

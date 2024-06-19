@@ -15,11 +15,13 @@ import CustomerHomePage from './Pages/CustomerHomePage';
 import LandingPage from './Pages/LandingPage';
 import UploadDocument from './Pages/UploadDocument';
 import ExpertHomePage from './Pages/ExpertHomePage'
+import AdminHomePage from './Pages/AdminHomePage'
 import InvalidAccess from './Pages/InvalidAccess'
 import Logout from './Pages/Logout'
 import SideBar from './components/SideBar'
 import ProtectedRoutes from './components/ProtectedRoutes';
 import { makeStyles } from '@material-ui/core/styles';
+import Settings from './Pages/Settings';
 
 const useStyles = makeStyles((theme) => ({
   mainContent: {
@@ -68,13 +70,17 @@ const App = () => {
 
             <Route path="/expert/signup" element={<ExpertSignUp />} />
 
-            <Route path="/document-review" element={<ProtectedRoutes Component={<DocumentReview />} allowCustomer={true} allowExpert={true} />} />
+            <Route path="/document-review" element={<ProtectedRoutes Component={<DocumentReview />} allowCustomer={true} allowExpert={true} allowAdmin={false}/>} />
 
-            <Route path="/upload-document" element={<ProtectedRoutes Component={<UploadDocument />} allowCustomer={true} allowExpert={false} />} />
+            <Route path="/upload-document" element={<ProtectedRoutes Component={<UploadDocument />} allowCustomer={true} allowExpert={false} allowAdmin={false}/>} />
 
-            <Route path="/customer-home" element={<ProtectedRoutes Component={<CustomerHomePage />} allowCustomer={true} allowExpert={false} />} />
+            <Route path="/customer-home" element={<ProtectedRoutes Component={<CustomerHomePage />} allowCustomer={true} allowExpert={false} allowAdmin={false}/>} />
 
-            <Route path="/expert-home" element={<ProtectedRoutes Component={<ExpertHomePage />} allowCustomer={false} allowExpert={true} />} />
+            <Route path="/expert-home" element={<ProtectedRoutes Component={<ExpertHomePage />} allowCustomer={false} allowExpert={true} allowAdmin={false}/>} />
+
+            <Route path="/admin-home" element={<ProtectedRoutes Component={<AdminHomePage />} allowCustomer={false} allowExpert={false} allowAdmin={true}/>} />
+            
+            <Route path="/settings" element={<ProtectedRoutes Component={<Settings />} allowCustomer={true} allowExpert={true} allowAdmin={true}/>} />
 
             <Route path="/invalid-access" element={<InvalidAccess />} />
             

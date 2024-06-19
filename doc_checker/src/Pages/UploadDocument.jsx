@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import MultiStepForm from '../components/MultiStepForm';
-import { Stack } from '@mui/material';
+import { Stack, CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import ChooseDocument from '../components/ChooseDocument';
 import GatherDocDetails from '../components/GatherDocDetails';
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { DOCUMENT_TYPES } from '../Constants'
 import useAxios from '../hooks/UseAxios.hook'
 import { useSelector } from 'react-redux';
+import Alert from '@mui/material/Alert';
 
 const ResumeQuestionaire = {
     q1: 'Number of years of relevant experience',
@@ -53,11 +54,12 @@ function UploadDocument() {
     const [desc, setDesc] = React.useState('')
     const [extraInfo, setExtraInfo] = React.useState('')
     const [document, setDocument] = React.useState()
+    const [documentCategory, setDocumentCategory] = React.useState([])
     const navigate = useNavigate();
     const { data, error, loading, setUrl, setBody, setMethod, setHeaders, url } = useAxios({
-        //  url: '/review',
-        //   method: 'POST',
-        autoFetch: false
+        url: '/domains',
+        method: 'GET',
+        autoFetch: true
     });
     const user = useSelector(state => state.user.user)
     const sendQuestionaire = () => {
@@ -79,6 +81,9 @@ function UploadDocument() {
     useEffect(() => {
         if (data && url === '/review') {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+        if(data && url === '/domains') {
+            setDocumentCategory(data)
         }
     }, [data])
 
@@ -130,11 +135,14 @@ function UploadDocument() {
                     className="add-padding"
                     pt={5} pb={5}
                 >
-
-                    <Box p={3} sx={{ border: '1px solid #909090', height: '100%', minHeight: '40vh', minWidth: '50%' }} >
+                    {loading && url === '/domains' ? <CircularProgress color='secondary' size={100} /> :
+                    
+                        error && url === '/domains' ? <Alert severity="error">{error.response?.data}</Alert> :
+                        <>
+                        <Box p={3} sx={{ border: '1px solid #909090', height: '100%', minHeight: '40vh', minWidth: '50%' }} >
                         
                         <MultiStepForm numberOfSteps={numberOfSteps} activeStep={activeStep} />
-                        {activeStep === 0 && <ChooseDocument setDocType={setDocType} docType={docType} documentCategories={Object.keys(DOCUMENT_TYPES)} />}
+                        {activeStep === 0 && <ChooseDocument setDocType={setDocType} docType={docType} documentCategories={documentCategory} />}
                         {activeStep === 1 &&
                             <GatherDocDetails
                                 yearsOfExperience={yearsOfExperience} setYearsOfExperience={setYearsOfExperience}
@@ -187,6 +195,11 @@ function UploadDocument() {
 
 
                     </Box>
+                        </>
+                    
+                        
+                    }
+                    
                 </Box>
 
             </Box>

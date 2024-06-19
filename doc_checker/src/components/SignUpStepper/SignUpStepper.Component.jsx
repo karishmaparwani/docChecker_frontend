@@ -11,7 +11,8 @@ import Alert from '@mui/material/Alert';
 function SignUpStepper({ userData, setUserData, signUp,
     profile, setProfileData, selectedDomains,
     selectedIndustries, setSelectedDomains,
-    setSelectedIndustries }) {
+    setSelectedIndustries,
+    domains, industries }) {
     const fileInputRef = React.useRef(null);
     const [activeStep, setActiveStep] = useState(0);
     const [passwordsMatch, setPasswordsMatch] = useState(false);
@@ -103,7 +104,7 @@ function SignUpStepper({ userData, setUserData, signUp,
 
     const displayAlert = () => {
         if (error) {
-            return
+            return (<Alert severity="error">{error.message}</Alert>)
         } else if (data && docName) {
             return (<Alert severity="success">{docName}</Alert>)
         } else {
@@ -184,7 +185,7 @@ function SignUpStepper({ userData, setUserData, signUp,
                                         )}
                                         required
                                     >
-                                        {['Product Requirement Document', 'Resume', 'LOR', 'Essay'].map((domain) => (
+                                        {domains?.map((domain) => (
                                             <MenuItem key={domain} value={domain}>
                                                 {domain}
                                             </MenuItem>
@@ -209,7 +210,7 @@ function SignUpStepper({ userData, setUserData, signUp,
                                             </Box>
                                         )}
                                     >
-                                        {['Software', 'Hardware', 'Pharmaceutical', 'Banking', 'Consulting'].map((industry) => (
+                                        {industries?.map((industry) => (
                                             <MenuItem key={industry} value={industry}>
                                                 {industry}
                                             </MenuItem>
@@ -234,6 +235,7 @@ function SignUpStepper({ userData, setUserData, signUp,
                                         type="file"
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
+                                        accept="application/pdf"
                                         name="resume"
                                         onChange={handleFileUpload}
                                     />

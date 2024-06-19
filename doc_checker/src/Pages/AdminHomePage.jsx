@@ -48,7 +48,7 @@ function HomePage() {
         setRejectionModal(false)
         setRejectionReason("")
     }
-
+ 
     const openModal = () => {
         setShowModal(true)
     }
@@ -165,7 +165,7 @@ function HomePage() {
         setAllExpertsTab(true)
         setApprovedExpertsTab(false)
         setPendingExpertsTab(false)
-
+        
         closeModal()
         closeRejectionModal()
     }
@@ -245,7 +245,7 @@ function HomePage() {
             </>)
         }
         if (status === "Reject") {
-
+            
             setRejectedUser({
                 row,
                 status,
@@ -308,8 +308,7 @@ function HomePage() {
 
                                 </TableCell>
                             </>
-                    }
-
+                    }      
                 </TableRow>
             )) :
                 <TableRow>
