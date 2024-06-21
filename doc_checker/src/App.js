@@ -22,6 +22,7 @@ import SideBar from './components/SideBar'
 import ProtectedRoutes from './components/ProtectedRoutes';
 import { makeStyles } from '@material-ui/core/styles';
 import Settings from './Pages/Settings';
+import ForgotPassword from './Pages/ForgotPassword';
 
 const useStyles = makeStyles((theme) => ({
   mainContent: {
@@ -40,7 +41,7 @@ const MainContent = ({ children }) => {
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const noSidebarPaths = ['/', '/login', '/signup-as', '/signup', '/expert/signup', '/logout'];
+  const noSidebarPaths = ['/', '/login', '/signup-as', '/signup', '/expert/signup', '/logout', '/forgot-password'];
   const shouldShowSidebar = !noSidebarPaths.includes(location.pathname);
 
   return (
@@ -69,6 +70,8 @@ const App = () => {
             <Route path="/signup" element={<SignUp />} />
 
             <Route path="/expert/signup" element={<ExpertSignUp />} />
+            
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             <Route path="/document-review" element={<ProtectedRoutes Component={<DocumentReview />} allowCustomer={true} allowExpert={true} allowAdmin={false}/>} />
 
@@ -83,6 +86,7 @@ const App = () => {
             <Route path="/settings" element={<ProtectedRoutes Component={<Settings />} allowCustomer={true} allowExpert={true} allowAdmin={true}/>} />
 
             <Route path="/invalid-access" element={<InvalidAccess />} />
+            
             
             <Route path="/logout" element={<Logout />} />
 

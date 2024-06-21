@@ -4,19 +4,20 @@ import Grid from '@mui/material/Grid';
 import image from '../../images/landing_page_img.png'
 import './SignUpAsPage.css'
 import { Stack, Button } from '@mui/material';
-import Navbar from '../../components/Navbar/Navbar';
 import { useNavigate } from "react-router-dom";
 const SignUpAsPage = () => {
   const navigate = useNavigate();
 
   return (
     <div>
-      <Navbar />
-      <Box sx={{ bgcolor: '#cfe8fc', height: '92vh', marginTop: "17px" }} >
+      <Box sx={{ bgcolor: '#EFF0FB' }} >
 
         <Grid container spacing={2}>
           <Grid item xs={6} className='cusGrid'>
-            <img src={image} alt='landing_image' />
+            <img 
+              src={image} 
+              alt='landing_image'
+              />
           </Grid>
 
           <Grid

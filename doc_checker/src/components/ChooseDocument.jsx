@@ -5,7 +5,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { DOCUMENT_TYPES } from '../Constants'
 
-function ChooseDocument({ docType, setDocType, documentCategories }) {
+function ChooseDocument({ docType, setDocType, documentCategories, clearDetails }) {
+    const selectDocumentCategory = (doc) => {
+        setDocType(doc)
+        clearDetails()
+    }
+
+
     const displayCategories = () => {
         let buttonChunk = []
         for(let i=0; i<documentCategories.length; i+=2) {
@@ -13,14 +19,14 @@ function ChooseDocument({ docType, setDocType, documentCategories }) {
                 <Stack key={i} mt={5} spacing={3} direction="row">
                     <Button sx={{ width: '15vw', backgroundColor: docType === documentCategories[i] ? '#6FA5ED' : '#E4E6EA', color: docType === documentCategories[i] ? '#FFFFFF' : '#030303' }}
                             variant="contained"
-                            onClick={() => setDocType(documentCategories[i])}
+                          onClick={() => (selectDocumentCategory(documentCategories[i]))}
                         >
                             {documentCategories[i]}
                     </Button>
                     { i+1 < documentCategories.length &&
                         <Button sx={{ width: '15vw', backgroundColor: docType === documentCategories[i+1] ? '#6FA5ED' : '#E4E6EA', color: docType === documentCategories[i+1] ? '#FFFFFF' : '#030303' }}
                             variant="contained"
-                            onClick={() => setDocType(documentCategories[i+1])}
+                           onClick={() => (selectDocumentCategory(documentCategories[i+1]))}
                         >
                             {documentCategories[i+1]}
                         </Button>

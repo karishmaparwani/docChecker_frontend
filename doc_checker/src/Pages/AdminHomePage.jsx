@@ -218,7 +218,7 @@ function HomePage() {
         } else {
             setBody({
                 "userId": row.profile?._id,
-                "status": "reected",
+                "status": "rejected",
                 "message": rejectionReason
             })
         }

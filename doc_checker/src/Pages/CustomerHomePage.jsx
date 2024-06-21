@@ -57,8 +57,8 @@ function HomePage() {
       openModal()
     }
 
-    const loadPdfwithReview = (docId) => {
-      navigate('/document-review', { state: { docId } });
+    const loadPdfwithReview = (docId, expertEmailId = null) => {
+      navigate('/document-review', { state: { docId , expertEmailId} });
     }
 
     const handleSearchChange = (event) => {
@@ -124,14 +124,14 @@ function HomePage() {
                   
                   </TableCell>
                   <TableCell >{row.docType}</TableCell>
-                  <TableCell >{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Reviewed' : 'In Progress'}</TableCell>
+                  <TableCell >{row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'Completed' : 'In Progress'}</TableCell>
                   <TableCell align='right'>
                     <Button 
                     variant="contained" 
                     sx={{width: '12vw'}}
-                    onClick={() => loadPdfwithReview(row.docId)}
+                    onClick={() => loadPdfwithReview(row.docId, row.expertDetails?.emailId)}
                     >
-                      {row.status === REVIEW_STATUS.COMPLETED ? 'View Feedback' : 'View Document'}
+                      {row.reviewStatus === REVIEW_STATUS.COMPLETED ? 'View Feedback' : 'View Document'}
                     </Button>
                   </TableCell>
                 </TableRow>

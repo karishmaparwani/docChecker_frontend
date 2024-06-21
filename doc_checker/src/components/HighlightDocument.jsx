@@ -6,7 +6,6 @@ import {
 } from '@react-pdf-viewer/highlight';
 import ReviewBox from './ReviewBox';
 import CardComponent from './CardComponent';
-import Img from '../images/sample_photo.png'
 import CommentBox from './CommentBox';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
@@ -14,13 +13,14 @@ import BasicModal from './Modal';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
-import { ROLES } from '../Constants'
+import { ROLES, REVIEW_STATUS } from '../Constants'
 import useAxios from '../hooks/UseAxios.hook'
 
 import Alert from '@mui/material/Alert';
 import { CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, setIsSubmitReviewClicked, isSubmitReviewClicked }) {
+function HighlightDocument({ fileUrl, highlightData, docId,}) {
     const [message, setMessage] = React.useState('');
     const [notes, setNotes] = React.useState(JSON.parse(localStorage.getItem([docId])) ?? []);
     let noteId = notes[notes.length - 1]?.id || 0;
@@ -32,8 +32,8 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
         method: 'PUT',
         autoFetch: false
     });
+    const navigate = useNavigate()
 
-    console.log(highlightData)
 
     const noteEles = new Map();
 
@@ -45,22 +45,21 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
         setShowModal(false)
     }
 
-    useEffect(() => {
-        if(notes.length > 0 && highlightData?.comments?.length === notes.length) {
-            setIsSubmitReviewClicked(true)
-        } else {
-            setIsSubmitReviewClicked(false)
-        }
-    },[notes, highlightData])
+    const navigateToHome = () => {
+        closeModal()
+        navigate('/expert-home')
+    }
+
 
     useEffect(() => {
-        if (url?.includes('comments')) {
+        if (url === '/review/submit') {
             if (loading) {
                 setModalActions()
                 setModalTitle(<CircularProgress color='secondary' size={100} />)
             }
             if (error) {
-                setModalTitle(<Alert severity="error">{error?.response?.data}</Alert>)
+                console.log(error)
+                setModalTitle(<Alert severity="error">{error?.response?.data?.message}</Alert>)
                 setModalActions(<Stack direction="row" sx={{ margin: 'auto' }}>
                     <Button
                         variant="contained"
@@ -70,16 +69,12 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
                     </Button>
                 </Stack>)
             } else if (data) {
-                if(!isSubmitReviewClicked) {
-                    setIsSubmitReviewClicked(true)
-                }
-                setModalTitle(`Your review for ${highlightData?.attachmentName} has been submitted successfully!!! If you want to 
-                    complete the review process, click on "COMPLETED" on top right corner of the screen.`)
+                setModalTitle(`Your review for ${highlightData?.attachmentName} has been submitted successfully!!!`)
                 setModalActions(
                     <Stack direction="row" sx={{ margin: 'auto' }}>
                         <Button
                             variant="contained"
-                            onClick={closeModal}
+                            onClick={navigateToHome}
                         >
                             Done
                         </Button>
@@ -95,12 +90,12 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
 
     const confirmReviewSubmission = () => {
         localStorage.setItem([docId], JSON.stringify(notes))
-        setBody({
-            comments: notes
-        })
-        setUrl(`/review/${docId}/comments`)
 
-        console.log("Review Submitted")
+        setBody({
+            "docId": docId,
+            "comments": notes
+          })
+          setUrl('/review/submit')
     }
 
 
@@ -163,7 +158,7 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
         return (
             <CardComponent
                 name={highlightData.reviewerUsername} //change to first name and last name
-                //img={Img}
+                img={user?.image}
                 styling={styling}
                 getDate={getDate}
             >
@@ -234,7 +229,6 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
     }
 
     const deleteComment = (commentId) => {
-        console.log("Comment deleted")
         let modifiedNotes = notes.filter(note => note.id !== commentId)
         setNotes([...modifiedNotes])
         localStorage.setItem([docId], JSON.stringify(modifiedNotes))
@@ -308,12 +302,13 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
                                             note={note}
                                             name={highlightData.reviewerUsername} //change to first name and last name
                                             jumpToHighlightArea={jumpToHighlightArea}
-                                            //  img={Img}
+                                            img={user.role === ROLES.EXPERT ? user?.image : ""}
                                             styling={{ maxWidth: 345 }}
                                             isReviewBox={true}
                                             user={user}
                                             deleteComment={deleteComment}
                                             getDate={getDate}
+                                            reviewStatus={highlightData?.reviewStatus}
                                         >
                                             <ReviewBox note={note} />
                                         </CardComponent>
@@ -333,7 +328,7 @@ function HighlightDocument({ fileUrl, highlightData, docId, isReviewCompleted, s
                             variant="contained"
                             sx={{ height: '36px', width: '40vw', left: '30vw' }}
                             onClick={onSubmitReview}
-                            disabled={isReviewCompleted || notes.length === 0}
+                            disabled={notes.length === 0 || highlightData?.reviewStatus === REVIEW_STATUS.COMPLETED}
                         >
                             Submit Review
                         </Button>

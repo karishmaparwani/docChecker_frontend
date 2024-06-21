@@ -1,19 +1,51 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import Img from '../images/sample_photo.png';
 import { Button, TextField, Stack } from '@mui/material';
 
-function ChangeProfileSetting() {
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [userName, setUserName] = useState("")
-    const [email, setEmail] = useState("")
+import { ROLES } from '../Constants'
+
+
+function ChangeProfileSetting({user, setUrl, setBody, setMethod, selectedImage, data}) {
+    const [firstName, setFirstName] = useState(user.firstname)
+    const [lastName, setLastName] = useState(user.lastname)
+    const [userName, setUserName] = useState(user.username)
+    const [email, setEmail] = useState(user.emailId)
     const [emailError, setEmailError] = useState(false);
 
+    useEffect(() => {
+        setFirstName(user.firstname)
+        setLastName(user?.lastname)
+        setUserName(user?.username)
+        setEmail(user.emailId)
+    }, [user])
+    
+
     const handleProfileSettingsUpdate = () => {
-        console.log("update profile settings")
+        if(user.role === ROLES.CUSTOMER) {
+            setUrl('/updateCustomerProfile')
+            setBody({
+                "firstname": firstName,
+                "lastname": lastName,
+                "username": userName,
+                "emailId": email,
+                "image": selectedImage
+              })
+        }
+
+        if(user.role === ROLES.EXPERT) {
+            setUrl('/updateExpertProfile')
+            setBody({
+                "firstname": firstName,
+                "lastname": lastName,
+                "username": userName,
+                "emailId": email,
+                "image": selectedImage,
+                "profile": user.profile
+              })
+        }
+        
+          setMethod('PUT')
     }
 
     const handleEmailChange = (e) => {

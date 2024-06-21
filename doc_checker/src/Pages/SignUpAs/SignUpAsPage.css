@@ -1,6 +1,5 @@
 .cusGrid {
-    /* width: 200px; */
-    height: 92vh;
+    height: 100vh;
     position: relative;
     display: inline-block;
     overflow: hidden;

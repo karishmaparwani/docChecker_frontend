@@ -53,7 +53,7 @@ function HomePage() {
   }
 
   const loadPdfwithReview = (docId) => {
-    navigate('/document-review', { state: { docId } });
+    navigate('/document-review', { state: { docId} });
   }
 
   const handleSearchChange = (event) => {
@@ -75,7 +75,7 @@ function HomePage() {
             {row.docId}
           </TableCell>
           <TableCell>
-            {row.createdBy}
+            {row.userDetails?.firstname +" "+ row.userDetails?.lastname}
           </TableCell>
           <TableCell ><Button sx={{ textTransform: 'none' }} onClick={() => showDocumentDescription(row)}>{row?.attachmentName}</Button></TableCell>
           <TableCell >{row.docType}</TableCell>

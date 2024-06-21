@@ -12,10 +12,8 @@ import {ROLES} from '../Constants'
 
 function DocumentReview() {
     const location = useLocation();
-    const { docId } = location.state || {};
+    const { docId, expertEmailId } = location.state || {};
     const [pdf, setPdf] = useState("")
-    const [isReviewCompleted, setIsReviewCompleted] = useState(false)
-    const [isSubmitReviewClicked, setIsSubmitReviewClicked] = useState(false) 
     const { data, error, loading } = useAxios({
         url: `/review/${docId}`,
         autoFetch: true
@@ -26,9 +24,9 @@ function DocumentReview() {
         setPdf(data?.attachment)
     }, [data])
 
-    const completeReviewProcess = () => {
-        setIsReviewCompleted(true)
-    }
+    const handleContactExpert = () => {
+        window.location.href = `mailto:${expertEmailId}?subject=Document Review: ${docId}&body=Hello,`;
+    };
 
 
     return (
@@ -37,21 +35,15 @@ function DocumentReview() {
                 <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
                     Document Review
                 </Typography>
-                {user.role === ROLES.CUSTOMER && <Button variant="contained" >Contact Expert</Button>}
-                {user.role === ROLES.EXPERT && 
-                <Button 
-                    variant="contained" 
-                    onClick={completeReviewProcess}
-                    disabled={!isSubmitReviewClicked}
-                    >Completed</Button>
-                } 
+                {user.role === ROLES.CUSTOMER 
+                && data?.reviewStatus === "completed" 
+                && <Button variant="contained" onClick={handleContactExpert}>Contact Expert</Button>}
                 
             </Box>
             <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.15.349/build/pdf.worker.min.js">
                 <div
                     style={{
                         height: '680px',
-                        //   width: '900px',
                         marginLeft: 'auto',
                         marginRight: 'auto'
                     }}
@@ -60,8 +52,6 @@ function DocumentReview() {
                         loading ? <CircularProgress color='secondary' size={200}/> :
                             <ErrorBoundary>
                                 {pdf && <HighlightDocument fileUrl={pdf} highlightData={data} docId={docId}
-                                isReviewCompleted={isReviewCompleted} setIsSubmitReviewClicked={setIsSubmitReviewClicked} 
-                                isSubmitReviewClicked={isSubmitReviewClicked}
                                 />}
                             </ErrorBoundary>
                     }

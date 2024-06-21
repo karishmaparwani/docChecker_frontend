@@ -8,7 +8,7 @@ function GatherDocDetails(props) {
         <Box mt={5}>
             <Box component="section" sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ width: '100%' }}>
-                    {props?.questionsObj?.q1}
+                    {props?.questionsObj?.q1} <span style={{ color: 'red' }}>*</span>
                 </Typography>
                 <TextField fullWidth id="outlined-controlled"
                     value={props.yearsOfExperience}
@@ -23,7 +23,7 @@ function GatherDocDetails(props) {
             </Box>
             <Box component="section" sx={{ display: 'flex', alignItems: 'center' }} mt={3}>
                 <Typography sx={{ width: '30%' }}>
-                    {props?.questionsObj?.q2}
+                    {props?.questionsObj?.q2} <span style={{ color: 'red' }}>*</span>
                 </Typography>
                 <TextField fullWidth id="outlined-controlled"
                     value={props.docName}
@@ -36,7 +36,7 @@ function GatherDocDetails(props) {
             </Box>
             <Box component="section" mt={3}>
                 <Typography mb={2}>
-                    {props?.questionsObj?.q3}
+                    {props?.questionsObj?.q3} <span style={{ color: 'red' }}>*</span>
                 </Typography>
                 <TextField
                    id="filled-multiline-static"
@@ -50,7 +50,7 @@ function GatherDocDetails(props) {
             </Box>
             <Box component="section" mt={3}>
                 <Typography mb={2}>
-                    {props?.questionsObj?.q4}
+                    {props?.questionsObj?.q4} <span style={{ color: 'red' }}>*</span>
                 </Typography>
                 <TextField
                    id="filled-multiline-static"
