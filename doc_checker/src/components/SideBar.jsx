@@ -64,6 +64,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: theme.spacing(2),
   },
+  profileImage: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+    borderRadius: '50%',
+    marginRight: theme.spacing(1),
+  },
   userNameEmail: {
     display: 'flex',
     flexDirection: 'column',
@@ -106,7 +112,6 @@ const Sidebar = () => {
 
 
   const handleLogout = () => {
-    console.log("Handle logout")
     navigate('/logout')
     sessionStorage.clear()
     dispatch(setUser({}))
@@ -139,9 +144,13 @@ const Sidebar = () => {
       <div>
         <Divider />
         <div className={classes.userInfo}>
-          <Avatar className={classes.avatar} >{user?.firstname?.charAt(0).toUpperCase()}</Avatar>
+          {user?.image ? (
+              <img src={user.image} alt={user?.fullname} className={classes.profileImage} />
+            ) : (
+              <Avatar className={classes.avatar}>{user?.firstname?.charAt(0).toUpperCase()}</Avatar>
+            )}
           <div className={classes.userNameEmail}>
-            <Typography variant="body1">{user?.username}</Typography>
+            <Typography variant="body1">{user?.fullname}</Typography>
             <Typography variant="body2">{user?.emailId}</Typography>
           </div>
         </div>

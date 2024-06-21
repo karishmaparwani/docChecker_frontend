@@ -6,7 +6,6 @@ import {
 } from '@react-pdf-viewer/highlight';
 import ReviewBox from './ReviewBox';
 import CardComponent from './CardComponent';
-import Img from '../images/sample_photo.png'
 import CommentBox from './CommentBox';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
@@ -14,7 +13,7 @@ import BasicModal from './Modal';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useSelector } from 'react-redux';
-import { ROLES } from '../Constants'
+import { ROLES, REVIEW_STATUS } from '../Constants'
 import useAxios from '../hooks/UseAxios.hook'
 
 import Alert from '@mui/material/Alert';
@@ -159,7 +158,7 @@ function HighlightDocument({ fileUrl, highlightData, docId,}) {
         return (
             <CardComponent
                 name={highlightData.reviewerUsername} //change to first name and last name
-                //img={Img}
+                img={user?.image}
                 styling={styling}
                 getDate={getDate}
             >
@@ -303,12 +302,13 @@ function HighlightDocument({ fileUrl, highlightData, docId,}) {
                                             note={note}
                                             name={highlightData.reviewerUsername} //change to first name and last name
                                             jumpToHighlightArea={jumpToHighlightArea}
-                                            //  img={Img}
+                                            img={user.role === ROLES.EXPERT ? user?.image : ""}
                                             styling={{ maxWidth: 345 }}
                                             isReviewBox={true}
                                             user={user}
                                             deleteComment={deleteComment}
                                             getDate={getDate}
+                                            reviewStatus={highlightData?.reviewStatus}
                                         >
                                             <ReviewBox note={note} />
                                         </CardComponent>
@@ -328,7 +328,7 @@ function HighlightDocument({ fileUrl, highlightData, docId,}) {
                             variant="contained"
                             sx={{ height: '36px', width: '40vw', left: '30vw' }}
                             onClick={onSubmitReview}
-                            disabled={notes.length === 0 || highlightData?.reviewStatus === "completed"}
+                            disabled={notes.length === 0 || highlightData?.reviewStatus === REVIEW_STATUS.COMPLETED}
                         >
                             Submit Review
                         </Button>

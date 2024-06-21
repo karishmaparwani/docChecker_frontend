@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ROLES } from '../Constants';
+import { ROLES, REVIEW_STATUS } from '../Constants';
 
 
 
@@ -30,7 +30,7 @@ export default function CardCompoent(props) {
                             </Avatar>
                     }
                     action={
-                        props.isReviewBox && props.user.role === ROLES.EXPERT ? 
+                        props.isReviewBox && props.user.role === ROLES.EXPERT  && props.reviewStatus !== REVIEW_STATUS.COMPLETED? 
                         <IconButton aria-label="delete" onClick={() => props.deleteComment(props.note.id)}>
                           <DeleteIcon sx={{color:'#9CA3AF' }}/>
                         </IconButton> :

@@ -62,7 +62,7 @@ const Login = () => {
 
     return (
         <div>
-            <Box sx={{ height: '92vh', marginTop: "20px" }} >
+            <Box >
 
                 <Grid container spacing={2}>
                     <Grid item xs={6} className='parentDivFullHeight'>
@@ -104,6 +104,15 @@ const Login = () => {
                                         onClick={() => navigate('/signup-as')}
                                     >
                                         Sign up
+                                    </Button>
+
+                                </Typography>
+                                <Typography>
+                                    <Button
+                                        variant="text"
+                                        onClick={() => navigate('/forgot-password')}
+                                    >
+                                        Forgot Password?
                                     </Button>
 
                                 </Typography>

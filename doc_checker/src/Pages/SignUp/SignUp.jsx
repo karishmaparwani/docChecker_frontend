@@ -70,8 +70,7 @@ const SignUp = () => {
 
     useEffect(() => {
         if (error && Object.keys(error).length) {
-            console.log(error?.response?.data)
-           setModalTitle(error?.response?.data)
+           setModalTitle(error?.response?.data?.message || error?.message)
             setModalActions(
                 <Stack direction="row" sx={{margin: 'auto'}}>
                     <Button
