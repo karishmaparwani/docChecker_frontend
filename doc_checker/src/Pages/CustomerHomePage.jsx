@@ -148,7 +148,7 @@ function HomePage() {
 
   return (
     <>
-      <Box>
+      <Box ml={5}>
       <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
             Home
         </Typography>

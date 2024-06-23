@@ -29,8 +29,8 @@ function Settings() {
     }, [data])
 
     return (
-        <Box display="flex" flexDirection="column" height="90vh" ml={5}>
-            <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
+        <Box display="flex" flexDirection="column" height="90vh" ml={8}>
+            <Typography variant="h4" mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
                 Settings
             </Typography>
             {error ?

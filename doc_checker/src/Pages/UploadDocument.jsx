@@ -134,7 +134,8 @@ function UploadDocument() {
     const isNextDisabled = disableNext()
     return (
         <>
-            <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
+        <Box ml={5}>
+        <Typography variant="h4" ml={5} mt={2} mb={2} sx={{ fontWeight: 'bold' }}>
                 Upload Document
             </Typography>
             <Box m={5} >
@@ -214,6 +215,8 @@ function UploadDocument() {
                 </Box>
 
             </Box>
+        </Box>
+            
 
         </>
     )
