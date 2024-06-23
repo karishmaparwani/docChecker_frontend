@@ -27,9 +27,9 @@ import ForgotPassword from './Pages/ForgotPassword';
 const MainContent = styled('div')(({ theme, shouldShowSidebar }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  marginLeft: shouldShowSidebar ? 220 : 0, // Sidebar width or 0
+  marginLeft: shouldShowSidebar ? 200 : 0, 
   [theme.breakpoints.down('sm')]: {
-    marginLeft: shouldShowSidebar ? 220 : 0,
+    marginLeft: shouldShowSidebar ? 200 : 0,
   },
 }));
 

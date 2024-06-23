@@ -22,7 +22,7 @@ import { ROLES } from '../Constants';
 import { red } from '@mui/material/colors';
 
 const DrawerContainer = styled('div')(({ theme }) => ({
-  width: 240,
+  width: 200,
   flexShrink: 0,
   [theme.breakpoints.down('sm')]: {
     width: 200,
@@ -30,7 +30,7 @@ const DrawerContainer = styled('div')(({ theme }) => ({
 }));
 
 const DrawerPaper = styled('div')(({ theme }) => ({
-  width: 240,
+  width: 200,
   backgroundColor: '#f5f5f5',
   display: 'flex',
   flexDirection: 'column',
@@ -63,8 +63,8 @@ const UserInfo = styled('div')(({ theme }) => ({
 }));
 
 const ProfileImage = styled('img')(({ theme }) => ({
-  width: theme.spacing(7),
-  height: theme.spacing(7),
+  width: theme.spacing(5),
+  height: theme.spacing(5),
   borderRadius: '50%',
   marginRight: theme.spacing(1),
 }));
@@ -72,7 +72,7 @@ const ProfileImage = styled('img')(({ theme }) => ({
 const UserNameEmail = styled('div')(() => ({
   display: 'flex',
   flexDirection: 'column',
-  marginLeft: '1rem',  // Added margin-left to create space
+  marginLeft: '1rem',  
 }));
 
 const ClickableDiv = styled('div')(() => ({
@@ -80,7 +80,7 @@ const ClickableDiv = styled('div')(() => ({
 }));
 
 const BottomSection = styled('div')({
-  marginTop: 'auto', // Pushes the bottom section to the bottom of the drawer
+  marginTop: 'auto', 
 });
 
 const Sidebar = () => {
