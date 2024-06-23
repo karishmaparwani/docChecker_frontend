@@ -14,22 +14,22 @@ import DocumentReview from './Pages/DocumentReview';
 import CustomerHomePage from './Pages/CustomerHomePage';
 import LandingPage from './Pages/LandingPage';
 import UploadDocument from './Pages/UploadDocument';
-import ExpertHomePage from './Pages/ExpertHomePage'
-import AdminHomePage from './Pages/AdminHomePage'
-import InvalidAccess from './Pages/InvalidAccess'
-import Logout from './Pages/Logout'
-import SideBar from './components/SideBar'
+import ExpertHomePage from './Pages/ExpertHomePage';
+import AdminHomePage from './Pages/AdminHomePage';
+import InvalidAccess from './Pages/InvalidAccess';
+import Logout from './Pages/Logout';
+import SideBar from './components/SideBar';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import { styled } from '@mui/system';
 import Settings from './Pages/Settings';
 import ForgotPassword from './Pages/ForgotPassword';
 
-const MainContent = styled('div')(({ theme }) => ({
+const MainContent = styled('div')(({ theme, shouldShowSidebar }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  marginLeft: 260, // Sidebar width
+  marginLeft: shouldShowSidebar ? 220 : 0, // Sidebar width or 0
   [theme.breakpoints.down('sm')]: {
-    marginLeft: 200,
+    marginLeft: shouldShowSidebar ? 220 : 0,
   },
 }));
 
@@ -46,7 +46,7 @@ const Layout = ({ children }) => {
   return (
     <LayoutContainer>
       {shouldShowSidebar && <SideBar />}
-      <MainContent>{children}</MainContent>
+      <MainContent shouldShowSidebar={shouldShowSidebar}>{children}</MainContent>
     </LayoutContainer>
   );
 };
