@@ -1,8 +1,8 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material';
-import Avatar from '@material-ui/core/Avatar';
-import { makeStyles } from '@material-ui/core/styles';
+import Avatar from '@mui/material/Avatar';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(() => ({
     avatar: {
